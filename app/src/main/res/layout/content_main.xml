@@ -134,10 +134,7 @@
                 android:id="@+id/np"/>
         </FrameLayout>
     </LinearLayout>
-    <SeekBar
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/seekbar"/>
+
     <!-- TODO: TableRow oder Rechtecke -->
 
 <EditText

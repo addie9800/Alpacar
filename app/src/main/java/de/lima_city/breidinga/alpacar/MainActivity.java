@@ -23,7 +23,6 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.RadioButton;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -65,8 +64,7 @@ public class MainActivity extends AppCompatActivity
         NumberPicker picker = (NumberPicker) findViewById(R.id.np);
         picker.setMinValue(1);
         picker.setMaxValue(9);
-        SeekBar bar = (SeekBar) findViewById(R.id.seekbar);
-        bar.setMax(8);
+
         // Defining Floating Action Button
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
