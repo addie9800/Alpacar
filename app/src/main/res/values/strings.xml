@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Alp a car</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="datum_hinfahrt_hint">Hinfahrt</string>
+    <string name="datum_rueckfahrt_hint">Rückfahrt</string>
+    <string name="title_activity_content">Content</string>
+    <string name="abfahrt_ort_hint">Abfahrtsort</string>
+    <string name="ziel_ort_hint">Zielort</string>
+    <string name="option_fahren">Ich fahre!</string>
+    <string name="option_mitfahren">Ich fahre mit!</string>
+    <string name="freie_plaetze">freie Plätze:</string>
+    <string name="anzahl_mitfahrer">Anzahl Mitfahrer:</string>
+
+</resources>

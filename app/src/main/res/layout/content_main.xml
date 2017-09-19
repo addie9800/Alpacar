@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context="de.lima_city.breidinga.alpacar.Content"
+    tools:showIn="@layout/app_bar_main"
+    android:weightSum="1">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:orientation="horizontal">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorTwoEingeloggt"
+            android:layout_weight="1"
+            android:id="@+id/frame_datum_hinfahrt">
+            <TextView
+                android:layout_width="wrap_content"
+                android:id="@+id/frame_datum_hinfahrt_text"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="@color/colorOneEingeloggt"
+                android:text="@string/datum_hinfahrt_hint"
+                android:textSize="25sp"/>
+        </FrameLayout>
+        <View style="@style/DividerV"/>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/colorTwoEingeloggt"
+            android:id="@+id/frame_datum_rueckfahrt">
+            <TextView
+                android:layout_width="wrap_content"
+                android:id="@+id/frame_datum_rueckfahrt_text"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/datum_rueckfahrt_hint"
+                android:textColor="@color/colorOneEingeloggt"
+                android:textSize="25sp"/>
+        </FrameLayout>
+    </LinearLayout>
+
+    <fragment
+        android:id="@+id/place_autocomplete_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="10dp"
+        />
+    <View style="@style/DividerH"/>
+    <fragment
+        android:id="@+id/place_autocomplete_fragment2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="10dp"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:orientation="horizontal">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorOneEingeloggt"
+            android:layout_weight="1"
+            android:id="@+id/frame_fahrer">
+            <TextView
+                android:layout_width="wrap_content"
+                android:id="@+id/frame_fahrer_text"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="@color/colorTwoEingeloggt"
+                android:text="@string/option_fahren"
+                android:textSize="25sp"/>
+        </FrameLayout>
+        <View style="@style/DividerV" />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/colorTwoEingeloggt"
+            android:id="@+id/frame_mitfahrer">
+            <TextView
+                android:layout_width="wrap_content"
+                android:id="@+id/frame_mitfahrer_text"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/option_mitfahren"
+                android:textColor="@color/colorOneEingeloggt"
+                android:textSize="25sp"/>
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="10dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/freie_plaetze"
+            android:id="@+id/edit_text_hint"
+            android:layout_gravity="center_vertical"/>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+            <NumberPicker
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="1"
+                android:orientation="horizontal"
+                android:id="@+id/np"/>
+        </FrameLayout>
+    </LinearLayout>
+    <SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/seekbar"/>
+    <!-- TODO: TableRow oder Rechtecke -->
+
+<EditText
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/sitze"/>
+</LinearLayout>
+</ScrollView>
