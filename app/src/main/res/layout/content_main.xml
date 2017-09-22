@@ -51,7 +51,7 @@
                 android:textSize="25sp"/>
         </FrameLayout>
     </LinearLayout>
-
+    <View style="@style/DividerH"/>
     <fragment
         android:id="@+id/place_autocomplete_fragment"
         android:layout_width="match_parent"
@@ -71,6 +71,7 @@
         android:layout_marginStart="10dp"
         android:layout_marginBottom="10dp"
         />
+    <View style="@style/DividerH"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="80dp"
@@ -106,8 +107,8 @@
                 android:textColor="@color/colorOneEingeloggt"
                 android:textSize="25sp"/>
         </FrameLayout>
-
     </LinearLayout>
+    <View style="@style/DividerH"/>
 
     <LinearLayout
         android:layout_width="match_parent"
