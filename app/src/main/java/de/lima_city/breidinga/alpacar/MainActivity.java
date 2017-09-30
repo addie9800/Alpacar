@@ -3,6 +3,9 @@ package de.lima_city.breidinga.alpacar;
 import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.graphics.Movie;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -32,18 +35,36 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import de.lima_city.breidinga.alpacar.data.FahrtContract;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 import static android.R.attr.button;
 import static android.R.attr.name;
+import static android.os.Build.VERSION_CODES.M;
 import static de.lima_city.breidinga.alpacar.R.id.fab;
 import static de.lima_city.breidinga.alpacar.R.id.sitze;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, DatePickerDialog.OnDateSetListener {
     int buttonId;
+    String abfahrtsOrt;
+    String ankunftsOrt;
+    String datumAb;
+    String datumRu;
+    boolean fahrer = true;
+
+
 
    ////// EditText sitze = (EditText) findViewById(R.id.sitze);
    // String abfahrt;
@@ -71,6 +92,9 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                validateData();
+                Toast toast =  Toast.makeText(getBaseContext(), "Enter", Toast.LENGTH_LONG);
+                toast.show();
                 //TODO: Feed database
                 //if(radioFahrer.isChecked()){
                 //   saveData();
@@ -89,32 +113,41 @@ public class MainActivity extends AppCompatActivity
 
         // PlaceAutoCompleteFragment
 
+
+        AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
+                .setTypeFilter(AutocompleteFilter.TYPE_FILTER_CITIES)
+                .build();
         PlaceAutocompleteFragment places2= (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment2);
         PlaceAutocompleteFragment places= (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
-        AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
-                .setTypeFilter(AutocompleteFilter.TYPE_FILTER_CITIES)
-                .build();
-
         places.setFilter(typeFilter);
         places2.setFilter(typeFilter);
         places.setHint(getResources().getString(R.string.abfahrt_ort_hint));
         places2.setHint(getResources().getString(R.string.ziel_ort_hint));
-        PlaceSelectionListener listener = new PlaceSelectionListener() {
+        places.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
-                Toast.makeText(getApplicationContext(),place.getName(),Toast.LENGTH_SHORT).show();
-
+                abfahrtsOrt = place.getName().toString();
             }
 
             @Override
             public void onError(Status status) {
                 Toast.makeText(getApplicationContext(),status.toString(),Toast.LENGTH_SHORT).show();
             }
-        };
-        places.setOnPlaceSelectedListener(listener);
-        places2.setOnPlaceSelectedListener(listener);
+        });
+        places2.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                ankunftsOrt = place.getName().toString();
+            }
+
+            @Override
+            public void onError(Status status) {
+                Toast.makeText(getApplicationContext(),status.toString(),Toast.LENGTH_SHORT).show();
+            }
+        });
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -124,6 +157,57 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
+    //Vollständigkeit der Daten überprüfen
+    private void validateData(){
+        if ((!datumAb.isEmpty() || datumAb != null) && (!abfahrtsOrt.isEmpty() || abfahrtsOrt != null) && (!ankunftsOrt.isEmpty() || ankunftsOrt != null)){
+            if (fahrer){
+                Uri.Builder builder = new Uri.Builder();
+                builder.scheme("https")
+                        .authority("breidinga.lima-city.de")
+                        .appendPath("Datenbank")
+                        .appendPath("fahrten.php");
+                Uri baseUri = builder.build();
+                Uri.Builder uriBuilder = baseUri.buildUpon();
+                uriBuilder.appendQueryParameter("mode", "insert");
+                uriBuilder.appendQueryParameter("Datum", datumAb);
+                uriBuilder.appendQueryParameter("AbfahrtOrt", abfahrtsOrt);
+                uriBuilder.appendQueryParameter("AnkunftOrt", ankunftsOrt);
+                Uri uri = uriBuilder.build();
+                Log.d("uri", uri.toString());
+                asyncTaskInsert(uri);
+            }
+        }
+    }
+    private void asyncTaskInsert(final Uri uri){
+        AsyncTask<Uri, Void,Void> asyncTask = new AsyncTask<Uri, Void, Void>() {
+            @Override
+            protected Void doInBackground(Uri... uris) {
+                URL url;
+                url = null;
+                try{
+                url = new URL(uri.toString());}
+                catch (MalformedURLException e){
+                    e.printStackTrace();
+                }
+                if(url == null){
+                    Log.e("MainActivity.java", "Error creating URL");
+                    return null;
+                }
+                OkHttpClient client = new OkHttpClient();
+                Request request = new Request.Builder()
+                        .url(url)
+                        .build();
+                try{
+                    client.newCall(request).execute();
+                }catch (IOException e){
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        };
+        asyncTask.execute(uri);
+    }
+
     private void saveData() {
         ContentValues values = new ContentValues();
         EditText sitze = (EditText) findViewById(R.id.sitze);
@@ -211,12 +295,14 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.frame_fahrer:
                 text.setText(R.string.freie_plaetze);
+                fahrer = true;
                 radioFahrer.setBackgroundColor(getResources().getColor(R.color.colorOneEingeloggt));
                 fahrerText.setTextColor(getResources().getColor(R.color.colorTwoEingeloggt));
                 radioMitfahrer.setBackgroundColor(getResources().getColor(R.color.colorTwoEingeloggt));
                 mitfahrerText.setTextColor(getResources().getColor(R.color.colorOneEingeloggt));
                 break;
             case R.id.frame_mitfahrer:
+                fahrer = false;
                 text.setText(R.string.anzahl_mitfahrer);
                 radioFahrer.setBackgroundColor(getResources().getColor(R.color.colorTwoEingeloggt));
                 fahrerText.setTextColor(getResources().getColor(R.color.colorOneEingeloggt));
@@ -234,12 +320,15 @@ public class MainActivity extends AppCompatActivity
             case R.id.frame_datum_hinfahrt:
                 TextView button = (TextView) findViewById(R.id.frame_datum_hinfahrt_text);
                 button.setText(i2 + "/" + (i1 + 1) + "/" + i);
+                datumAb = i + "-" + (i1 + 1) + "-" + i2;
+                Log.d("Datum", datumAb);
                 button.setTextColor(getResources().getColor(R.color.colorTwoEingeloggt));
                 layout.setBackgroundColor(getResources().getColor(R.color.colorOneEingeloggt));
                 break;
             case R.id.frame_datum_rueckfahrt:
                 TextView button1 = (TextView) findViewById(R.id.frame_datum_rueckfahrt_text);
                 button1.setText(i2 + "/" + (i1 + 1) + "/" + i);
+                datumRu = i + "-" + (i1 + 1) + "-" + i2;
                 button1.setTextColor(getResources().getColor(R.color.colorTwoEingeloggt));
                 layout.setBackgroundColor(getResources().getColor(R.color.colorOneEingeloggt));
                 break;
