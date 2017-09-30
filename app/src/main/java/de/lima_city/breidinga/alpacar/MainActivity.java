@@ -3,6 +3,7 @@ package de.lima_city.breidinga.alpacar;
 import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Movie;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -62,6 +63,7 @@ public class MainActivity extends AppCompatActivity
     String ankunftsOrt;
     String datumAb;
     String datumRu;
+    boolean login;
     boolean fahrer = true;
 
 
@@ -74,6 +76,19 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (getIntent().hasExtra("login")){
+            login = getIntent().getBooleanExtra("login", false);
+        }else{
+        try{
+        login = savedInstanceState.getBoolean("login", false);}
+        catch (NullPointerException e){
+            login = false;
+        }}
+        if (!login){
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            finish();
+            startActivity(intent);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
