@@ -12,6 +12,7 @@
     <EditText
         android:layout_marginTop="25dp"
         android:id="@+id/user"
+        android:visibility="visible"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:hint="Benutzername"
@@ -25,9 +26,46 @@
         android:layout_width="200dp"
         android:id="@+id/pass"
         android:layout_height="wrap_content"
+        android:visibility="visible"
         android:hint="Passwort"
         android:layout_gravity="center"
         android:inputType="textPassword"
+        android:textColor="@android:color/white"
+        android:textColorHint="@android:color/white"
+        android:textColorHighlight="@color/colorAccent"/>
+    <EditText
+        android:layout_marginTop="25dp"
+        android:layout_width="200dp"
+        android:id="@+id/Vorname"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:hint="Vorname"
+        android:layout_gravity="center"
+        android:inputType="textPersonName"
+        android:textColor="@android:color/white"
+        android:textColorHint="@android:color/white"
+        android:textColorHighlight="@color/colorAccent" />
+    <EditText
+        android:layout_marginTop="25dp"
+        android:layout_width="200dp"
+        android:id="@+id/Nachname"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:hint="Nachname"
+        android:layout_gravity="center"
+        android:inputType="textPersonName"
+        android:textColor="@android:color/white"
+        android:textColorHint="@android:color/white"
+        android:textColorHighlight="@color/colorAccent"/>
+    <EditText
+        android:layout_marginTop="25dp"
+        android:layout_width="200dp"
+        android:id="@+id/mail"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:hint="E-Mail"
+        android:layout_gravity="center"
+        android:inputType="textEmailAddress"
         android:textColor="@android:color/white"
         android:textColorHint="@android:color/white"
         android:textColorHighlight="@color/colorAccent"/>
@@ -35,7 +73,9 @@
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
-        android:layout_gravity="center">
+        android:layout_gravity="center"
+        android:id="@+id/buttonLayout"
+        android:visibility="visible">
         <Button
             android:layout_width="125dp"
             android:text="login"
@@ -54,5 +94,16 @@
             android:textColor="@android:color/white"
             android:background="@color/colorAccent" />
     </LinearLayout>
+    <Button
+        android:layout_width="300dp"
+        android:id="@+id/loginButton"
+        android:layout_marginTop="25dp"
+        android:onClick="sendDataButton"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:text="register"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        android:background="@color/colorAccent"/>
 
 </LinearLayout>
