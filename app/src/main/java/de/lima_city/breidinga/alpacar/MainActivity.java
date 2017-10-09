@@ -350,3 +350,4 @@ public class MainActivity extends AppCompatActivity
         }
     }
 }
+//TODO: CREDITS FUER ICONS flaticon.com

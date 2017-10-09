@@ -1,109 +1,126 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimaryDark">
+    android:background="@color/colorPrimaryDark"
+    android:orientation="vertical">
+
     <ImageView
-        android:layout_marginTop="50dp"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:src="@drawable/logo_fertig2"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp"
+        android:src="@drawable/logo_fertig2" />
+
     <EditText
-        android:layout_marginTop="25dp"
         android:id="@+id/user"
-        android:visibility="visible"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="25dp"
         android:hint="Benutzername"
         android:inputType="text"
-        android:layout_gravity="center"
         android:textColor="@android:color/white"
+        android:textColorHighlight="@color/colorAccent"
         android:textColorHint="@android:color/white"
-        android:textColorHighlight="@color/colorAccent"/>
+        android:visibility="visible" />
+
     <EditText
-        android:layout_marginTop="25dp"
-        android:layout_width="200dp"
         android:id="@+id/pass"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:visibility="visible"
-        android:hint="Passwort"
         android:layout_gravity="center"
+        android:layout_marginTop="25dp"
+        android:hint="Passwort"
         android:inputType="textPassword"
         android:textColor="@android:color/white"
+        android:textColorHighlight="@color/colorAccent"
         android:textColorHint="@android:color/white"
-        android:textColorHighlight="@color/colorAccent"/>
+        android:visibility="visible" />
+
     <EditText
-        android:layout_marginTop="25dp"
-        android:layout_width="200dp"
         android:id="@+id/Vorname"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:visibility="gone"
+        android:layout_gravity="center"
+        android:layout_marginTop="25dp"
         android:hint="Vorname"
-        android:layout_gravity="center"
         android:inputType="textPersonName"
         android:textColor="@android:color/white"
+        android:textColorHighlight="@color/colorAccent"
         android:textColorHint="@android:color/white"
-        android:textColorHighlight="@color/colorAccent" />
+        android:visibility="gone" />
+
     <EditText
-        android:layout_marginTop="25dp"
-        android:layout_width="200dp"
         android:id="@+id/Nachname"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:hint="Nachname"
         android:layout_gravity="center"
+        android:layout_marginTop="25dp"
+        android:hint="Nachname"
         android:inputType="textPersonName"
         android:textColor="@android:color/white"
+        android:textColorHighlight="@color/colorAccent"
         android:textColorHint="@android:color/white"
-        android:textColorHighlight="@color/colorAccent"/>
+        android:visibility="gone" />
+
     <EditText
-        android:layout_marginTop="25dp"
-        android:layout_width="200dp"
         android:id="@+id/mail"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:hint="E-Mail"
         android:layout_gravity="center"
+        android:layout_marginTop="25dp"
+        android:hint="E-Mail"
         android:inputType="textEmailAddress"
         android:textColor="@android:color/white"
+        android:textColorHighlight="@color/colorAccent"
         android:textColorHint="@android:color/white"
-        android:textColorHighlight="@color/colorAccent"/>
+        android:visibility="gone" />
+
     <LinearLayout
+        android:id="@+id/buttonLayout"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
         android:layout_gravity="center"
-        android:id="@+id/buttonLayout"
+        android:layout_marginTop="25dp"
         android:visibility="visible">
-        <Button
-            android:layout_width="125dp"
-            android:text="login"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
-            android:background="@color/colorAccent"
-            android:layout_marginEnd="25dp"
-            android:onClick="login"/>
 
         <Button
-            android:layout_marginStart="25dp"
             android:layout_width="125dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="25dp"
+            android:background="@color/colorAccent"
+            android:onClick="login"
+            android:text="login"
+            android:textColor="@android:color/white" />
+
+        <Button
+            android:layout_width="125dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:background="@color/colorAccent"
             android:onClick="register"
             android:text="register"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
-            android:background="@color/colorAccent" />
+            android:textColor="@android:color/white" />
     </LinearLayout>
-    <Button
-        android:layout_width="300dp"
-        android:id="@+id/loginButton"
-        android:layout_marginTop="25dp"
-        android:onClick="sendDataButton"
-        android:layout_gravity="center"
-        android:visibility="gone"
-        android:text="register"
-        android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
-        android:background="@color/colorAccent"/>
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="25dp"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/loginButton"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="25dp"
+        android:background="@color/colorAccent"
+        android:onClick="sendDataButton"
+        android:text="register"
+        android:textColor="@android:color/white"
+        android:visibility="gone" />
 </LinearLayout>

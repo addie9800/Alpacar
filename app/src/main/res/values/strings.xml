@@ -14,5 +14,6 @@
     <string name="option_mitfahren">Ich fahre mit!</string>
     <string name="freie_plaetze">freie Plätze:</string>
     <string name="anzahl_mitfahrer">Anzahl Mitfahrer:</string>
+    <string name="menu_neue_fahrt">Neue Fahrt erstellen</string>
 
 </resources>
