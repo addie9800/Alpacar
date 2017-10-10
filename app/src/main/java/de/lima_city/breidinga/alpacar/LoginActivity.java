@@ -59,6 +59,7 @@ public class LoginActivity extends AppCompatActivity {
         loginButtonLayout = (LinearLayout) findViewById(R.id.buttonLayout);
         loginButton = (Button) findViewById(R.id.loginButton);
         bar = (ProgressBar) findViewById(R.id.progressBar);
+        Log.d("LoginActivityContext", getBaseContext().toString());
     }
 
     public void register(View view) {
@@ -76,10 +77,11 @@ public class LoginActivity extends AppCompatActivity {
         bar.setVisibility(View.GONE);
         loginButton.setVisibility(View.VISIBLE);
     }
+    //TODO: Check if username is already taken
 
     public void sendDataButton(View view) {
         if (vorname.getText().toString().isEmpty() || nachname.getText().toString().isEmpty() || mail.getText().toString().isEmpty()) {
-            Toast.makeText(this, "Eine oder mehrere Felder nicht ausgefüllt", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Ein oder mehrere Feld(er) nicht ausgefüllt", Toast.LENGTH_LONG).show();
             return;
         }
         CharSequence mailtext = mail.getText();
@@ -121,7 +123,7 @@ public class LoginActivity extends AppCompatActivity {
                 loginButton.setVisibility(View.GONE);
                 bar.setVisibility(View.VISIBLE);
             }
-
+//TODO: Fahrer ID abfragen und speichern
             @Override
             protected Void doInBackground(Uri... uris) {
                 URL url;
@@ -132,12 +134,9 @@ public class LoginActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 if (url == null) {
-                    Log.e("MainActivity.java", "Error creating URL");
+                    Log.e("LoginActivity.java", "Error creating URL");
                     return null;
                 }
-
-
-                // new try
                 HttpURLConnection urlConnection = null;
                 InputStream inputStream = null;
                 try {
@@ -194,6 +193,13 @@ public class LoginActivity extends AppCompatActivity {
         final Uri uri = uriBuilder.build();
         Log.d("uri", uri.toString());
         AsyncTask<Uri, Void, Void> asyncTask = new AsyncTask<Uri, Void, Void>() {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                loginButtonLayout.setVisibility(View.GONE);
+                bar.setVisibility(View.VISIBLE);
+            }
+
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
