@@ -4,12 +4,11 @@ import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Movie;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -20,13 +19,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.NumberPicker;
-import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,11 +32,6 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.w3c.dom.Text;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -48,13 +39,7 @@ import java.net.URL;
 import de.lima_city.breidinga.alpacar.data.FahrtContract;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.Response;
 
-import static android.R.attr.button;
-import static android.R.attr.name;
-import static android.os.Build.VERSION_CODES.M;
-import static de.lima_city.breidinga.alpacar.R.id.fab;
-import static de.lima_city.breidinga.alpacar.R.id.sitze;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, DatePickerDialog.OnDateSetListener {
@@ -65,8 +50,8 @@ public class MainActivity extends AppCompatActivity
     String datumRu;
     boolean login;
     boolean fahrer = true;
-
-
+    int fahrerId;
+    SharedPreferences preferences;
 
    ////// EditText sitze = (EditText) findViewById(R.id.sitze);
    // String abfahrt;
@@ -75,21 +60,33 @@ public class MainActivity extends AppCompatActivity
     String ankunft;
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.clear();
+        editor.putBoolean("login", ((Alpacar) getApplication()).getLoginState());
+        editor.putInt("fahrerId", ((Alpacar) getApplication()).getFahrerId());
+        editor.clear().apply();
+    }
+
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (getIntent().hasExtra("login")){
-            login = getIntent().getBooleanExtra("login", false);
-        }else{
+        super.onCreate(savedInstanceState);
+        preferences = this.getSharedPreferences("USER_DATA", Context.MODE_PRIVATE);
+        login = preferences.getBoolean("login", false);
+        ((Alpacar) getApplication()).setLoginState(preferences.getBoolean("login", false));
+        ((Alpacar) getApplication()).setFahrerId(preferences.getInt("fahrerId", -1));
         try{
-        login = savedInstanceState.getBoolean("login", false);}
-        catch (NullPointerException e){
-            login = false;
-        }}
+            login = ((Alpacar) getApplication()).getLoginState();
+        }catch (NullPointerException e){
+            e.printStackTrace();
+        }
         if (!login){
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             finish();
             startActivity(intent);
         }
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -171,6 +168,7 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        Log.d("FahrerId", String.valueOf(fahrerId));
     }
     //Vollständigkeit der Daten überprüfen
     private void validateData(){

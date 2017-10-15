@@ -1,6 +1,8 @@
 package de.lima_city.breidinga.alpacar;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -110,8 +112,14 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
+                ans = ans.replace("\"", "");
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                intent.putExtra("login", true);
+                SharedPreferences.Editor editor = (getBaseContext().getSharedPreferences("USER_DATA", Context.MODE_PRIVATE)).edit();
+                editor.putBoolean("login", true);
+                editor.putInt("fahrerId", Integer.parseInt(ans));
+                editor.clear().apply();
+                ((Alpacar) getApplication()).setLoginState(true);
+                ((Alpacar) getApplication()).setFahrerId(Integer.parseInt(ans));
                 Toast.makeText(getBaseContext(), "Registration successful", Toast.LENGTH_LONG).show();
                 finish();
                 startActivity(intent);
@@ -205,9 +213,16 @@ public class LoginActivity extends AppCompatActivity {
                 super.onPostExecute(aVoid);
                 ans = ans.replace(" ", "");
                 Log.d("test2", ans);
-                if (ans.equals("true")) {
+                if (!(ans.equals("false"))) {
+                    ans = ans.replace("\"", "");
+                    int id = Integer.parseInt(ans);
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    intent.putExtra("login", true);
+                    SharedPreferences.Editor editor = (getBaseContext().getSharedPreferences("USER_DATA", Context.MODE_PRIVATE)).edit();
+                    editor.putBoolean("login", true);
+                    editor.putInt("fahrerId", Integer.parseInt(ans));
+                    editor.clear().apply();
+                    ((Alpacar) getApplication()).setLoginState(true);
+                    ((Alpacar) getApplication()).setFahrerId(Integer.parseInt(ans));
                     Toast.makeText(getBaseContext(), "Login successful", Toast.LENGTH_LONG).show();
                     finish();
                     startActivity(intent);

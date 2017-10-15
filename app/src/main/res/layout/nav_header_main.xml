@@ -30,6 +30,6 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="breidinga.lima-city.de" />
+        android:text="Bitte melden Sie sich an" />
 
 </LinearLayout>

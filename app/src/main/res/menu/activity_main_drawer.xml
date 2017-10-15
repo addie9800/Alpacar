@@ -8,7 +8,7 @@
             android:title="@string/menu_neue_fahrt" />
         <item
             android:id="@+id/nav_gallery"
-            android:icon="@drawable/listing-option"
+            android:icon="@drawable/listing_option"
             android:title="@string/menu_meine_fahrten" />
         <item
             android:id="@+id/nav_slideshow"
