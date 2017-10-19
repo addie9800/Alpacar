@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -35,10 +36,15 @@ import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 
 import de.lima_city.breidinga.alpacar.data.FahrtContract;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
+import static android.os.Build.VERSION_CODES.M;
 
 
 public class MainActivity extends AppCompatActivity
@@ -83,14 +89,12 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         }
         if (!login){
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            finish();
-            startActivity(intent);
+            startLoginActivity();
         }
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        FrameLayout radioFahrer = (FrameLayout) findViewById(R.id.frame_fahrer);
+        final FrameLayout radioFahrer = (FrameLayout) findViewById(R.id.frame_fahrer);
         FrameLayout radioMitfahrer = (FrameLayout) findViewById(R.id.frame_mitfahrer);
         FrameLayout hinfahrt = (FrameLayout) findViewById(R.id.frame_datum_hinfahrt);
         FrameLayout rueckfahrt = (FrameLayout) findViewById(R.id.frame_datum_rueckfahrt);
@@ -108,10 +112,6 @@ public class MainActivity extends AppCompatActivity
                 Toast toast =  Toast.makeText(getBaseContext(), "Enter", Toast.LENGTH_LONG);
                 toast.show();
                 //TODO: Feed database
-                //if(radioFahrer.isChecked()){
-                //   saveData();
-                //}
-
             }
         });
 
@@ -172,6 +172,7 @@ public class MainActivity extends AppCompatActivity
     }
     //Vollständigkeit der Daten überprüfen
     private void validateData(){
+        try {
         if ((!datumAb.isEmpty() || datumAb != null) && (!abfahrtsOrt.isEmpty() || abfahrtsOrt != null) && (!ankunftsOrt.isEmpty() || ankunftsOrt != null)){
             if (fahrer){
                 Uri.Builder builder = new Uri.Builder();
@@ -182,13 +183,16 @@ public class MainActivity extends AppCompatActivity
                 Uri baseUri = builder.build();
                 Uri.Builder uriBuilder = baseUri.buildUpon();
                 uriBuilder.appendQueryParameter("mode", "insert");
-                uriBuilder.appendQueryParameter("Datum", datumAb);
+                uriBuilder.appendQueryParameter("Datum", formatDate());
                 uriBuilder.appendQueryParameter("AbfahrtOrt", abfahrtsOrt);
                 uriBuilder.appendQueryParameter("AnkunftOrt", ankunftsOrt);
+                uriBuilder.appendQueryParameter("Fahrer", String.valueOf(((Alpacar) getApplication()).getFahrerId()));
                 Uri uri = uriBuilder.build();
                 Log.d("uri", uri.toString());
                 asyncTaskInsert(uri);
             }
+        }}catch (NullPointerException e){
+            Toast.makeText(getBaseContext(), "Bitte füllen Sie alles aus", Toast.LENGTH_LONG).show();
         }
     }
     private void asyncTaskInsert(final Uri uri){
@@ -221,13 +225,22 @@ public class MainActivity extends AppCompatActivity
         asyncTask.execute(uri);
     }
 
-    private void saveData() {
-        ContentValues values = new ContentValues();
-        EditText sitze = (EditText) findViewById(R.id.sitze);
-        int freieSitze = Integer.parseInt(sitze.getText().toString()) ;
-            //TODO: ausführen
-            values.put(FahrtContract.FahrtEntry.COLUMN_FREIE_PLAETZE, freieSitze);
-          //  getContentResolver().insert(currentUri, values);
+    private String formatDate() {
+        TextView DatumHinfahrtText = (TextView) findViewById(R.id.frame_datum_hinfahrt_text);
+        String datumHinfahrt = DatumHinfahrtText.getText().toString();
+        String oldFormat = "dd/MM/yyyy";
+        String newFormat = "yyyy-MM-dd";
+        String formattedDate = "";
+        SimpleDateFormat dateFormat = new SimpleDateFormat(oldFormat);
+        java.util.Date myDate = null;
+        try {
+            myDate = dateFormat.parse(datumHinfahrt);
+        } catch (java.text.ParseException e) {
+            e.printStackTrace();
+        }
+        SimpleDateFormat timeFormat = new SimpleDateFormat(newFormat);
+        formattedDate = timeFormat.format(myDate);
+        return formattedDate;
         }
 
 
@@ -282,6 +295,15 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_send) {
 
+        } else if (id == R.id.logout){
+            ((Alpacar) getApplication()).setFahrerId(-1);
+            ((Alpacar) getApplication()).setLoginState(false);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.clear();
+            editor.putBoolean("login", false);
+            editor.putInt("fahrerId", -1);
+            editor.clear().apply();
+            startLoginActivity();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -289,6 +311,11 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    private void startLoginActivity(){
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        finish();
+        startActivity(intent);
+    }
 
     @Override
     public void onClick(View view) {
@@ -333,8 +360,6 @@ public class MainActivity extends AppCompatActivity
             case R.id.frame_datum_hinfahrt:
                 TextView button = (TextView) findViewById(R.id.frame_datum_hinfahrt_text);
                 button.setText(i2 + "/" + (i1 + 1) + "/" + i);
-                datumAb = i + "-" + (i1 + 1) + "-" + i2;
-                Log.d("Datum", datumAb);
                 button.setTextColor(getResources().getColor(R.color.colorTwoEingeloggt));
                 layout.setBackgroundColor(getResources().getColor(R.color.colorOneEingeloggt));
                 break;

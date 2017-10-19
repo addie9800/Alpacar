@@ -213,9 +213,8 @@ public class LoginActivity extends AppCompatActivity {
                 super.onPostExecute(aVoid);
                 ans = ans.replace(" ", "");
                 Log.d("test2", ans);
-                if (!(ans.equals("false"))) {
+                if (!(ans.equals("false")) || !(ans.equals(""))) {
                     ans = ans.replace("\"", "");
-                    int id = Integer.parseInt(ans);
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     SharedPreferences.Editor editor = (getBaseContext().getSharedPreferences("USER_DATA", Context.MODE_PRIVATE)).edit();
                     editor.putBoolean("login", true);
@@ -228,7 +227,6 @@ public class LoginActivity extends AppCompatActivity {
                     startActivity(intent);
                 } else {
                     Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
-
                 }
             }
 
@@ -263,10 +261,6 @@ public class LoginActivity extends AppCompatActivity {
                     } else {
                         Log.e("QueryUtils", "Error response code: " + urlConnection.getResponseCode());
                     }
-
-
-                    // TODO: Parse the response given by the SAMPLE_JSON_RESPONSE string and
-                    // build up a list of Earthquake objects with the corresponding data.
 
                 } catch (ProtocolException e) {
                     Log.e("QueryUtils", "Problem with the protocol", e);
