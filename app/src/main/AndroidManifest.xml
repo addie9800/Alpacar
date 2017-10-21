@@ -25,9 +25,10 @@
         </activity>
         <activity android:name=".LoginActivity"
             android:theme="@style/AppTheme.NoActionBar"
-            android:noHistory="true">
-
-        </activity>
+            android:noHistory="true"/>
+        <activity
+            android:name=".FahrtenActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".Content"

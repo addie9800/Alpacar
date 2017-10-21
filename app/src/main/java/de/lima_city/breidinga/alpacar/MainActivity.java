@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity
     //Vollständigkeit der Daten überprüfen
     private void validateData(){
         try {
-        if ((!datumAb.isEmpty() || datumAb != null) && (!abfahrtsOrt.isEmpty() || abfahrtsOrt != null) && (!ankunftsOrt.isEmpty() || ankunftsOrt != null)){
+        if ((!formatDate().isEmpty() || formatDate() != null) && (!abfahrtsOrt.isEmpty() || abfahrtsOrt != null) && (!ankunftsOrt.isEmpty() || ankunftsOrt != null)){
             if (fahrer){
                 Uri.Builder builder = new Uri.Builder();
                 builder.scheme("https")
@@ -190,6 +190,9 @@ public class MainActivity extends AppCompatActivity
                 Uri uri = uriBuilder.build();
                 Log.d("uri", uri.toString());
                 asyncTaskInsert(uri);
+            }else{
+                //TODO: Fahrten heraussuchen
+
             }
         }}catch (NullPointerException e){
             Toast.makeText(getBaseContext(), "Bitte füllen Sie alles aus", Toast.LENGTH_LONG).show();
@@ -285,8 +288,9 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_new_fahrt) {
 
-        } else if (id == R.id.nav_gallery) {
-
+        } else if (id == R.id.nav_meine_fahrten) {
+            Intent intent = new Intent(MainActivity.this, FahrtenActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_manage) {
@@ -311,7 +315,7 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private void startLoginActivity(){
+    public void startLoginActivity(){
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
         finish();
         startActivity(intent);

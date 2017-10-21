@@ -7,7 +7,7 @@
             android:icon="@drawable/jeep"
             android:title="@string/menu_neue_fahrt" />
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/nav_meine_fahrten"
             android:icon="@drawable/listing_option"
             android:title="@string/menu_meine_fahrten" />
         <item
