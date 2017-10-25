@@ -27,11 +27,17 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.common.data.DataHolder;
 import com.google.android.gms.location.places.AutocompleteFilter;
+import com.google.android.gms.location.places.AutocompletePrediction;
+import com.google.android.gms.location.places.AutocompletePredictionBuffer;
 import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -58,6 +64,10 @@ public class MainActivity extends AppCompatActivity
     boolean fahrer = true;
     int fahrerId;
     SharedPreferences preferences;
+    double latAb;
+    double latAn;
+    double lonAb;
+    double lonAn;
 
    ////// EditText sitze = (EditText) findViewById(R.id.sitze);
    // String abfahrt;
@@ -140,7 +150,9 @@ public class MainActivity extends AppCompatActivity
         places.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
-                abfahrtsOrt = place.getName().toString();
+                abfahrtsOrt = place.getAddress().toString();
+                latAb = place.getLatLng().latitude;
+                lonAb =  place.getLatLng().longitude;
             }
 
             @Override
@@ -151,7 +163,9 @@ public class MainActivity extends AppCompatActivity
         places2.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
-                ankunftsOrt = place.getName().toString();
+                ankunftsOrt = place.getAddress().toString();
+                latAn = place.getLatLng().latitude;
+                lonAn =  place.getLatLng().longitude;
             }
 
             @Override
@@ -174,26 +188,29 @@ public class MainActivity extends AppCompatActivity
     private void validateData(){
         try {
         if ((!formatDate().isEmpty() || formatDate() != null) && (!abfahrtsOrt.isEmpty() || abfahrtsOrt != null) && (!ankunftsOrt.isEmpty() || ankunftsOrt != null)){
-            if (fahrer){
                 Uri.Builder builder = new Uri.Builder();
                 builder.scheme("https")
                         .authority("breidinga.lima-city.de")
-                        .appendPath("Datenbank")
-                        .appendPath("fahrten.php");
+                        .appendPath("Datenbank");
+            if (fahrer){
+                builder.appendPath("fahrten.php");
+            }else{
+                builder.appendPath("fahrtfinder.php");
+            }
                 Uri baseUri = builder.build();
                 Uri.Builder uriBuilder = baseUri.buildUpon();
                 uriBuilder.appendQueryParameter("mode", "insert");
                 uriBuilder.appendQueryParameter("Datum", formatDate());
                 uriBuilder.appendQueryParameter("AbfahrtOrt", abfahrtsOrt);
+                uriBuilder.appendQueryParameter("latAb", String.valueOf(latAb));
+                uriBuilder.appendQueryParameter("lonAb", String.valueOf(lonAb));
                 uriBuilder.appendQueryParameter("AnkunftOrt", ankunftsOrt);
+                uriBuilder.appendQueryParameter("latAn", String.valueOf(latAn));
+                uriBuilder.appendQueryParameter("lonAn", String.valueOf(lonAn));
                 uriBuilder.appendQueryParameter("Fahrer", String.valueOf(((Alpacar) getApplication()).getFahrerId()));
                 Uri uri = uriBuilder.build();
                 Log.d("uri", uri.toString());
                 asyncTaskInsert(uri);
-            }else{
-                //TODO: Fahrten heraussuchen
-
-            }
         }}catch (NullPointerException e){
             Toast.makeText(getBaseContext(), "Bitte füllen Sie alles aus", Toast.LENGTH_LONG).show();
         }
