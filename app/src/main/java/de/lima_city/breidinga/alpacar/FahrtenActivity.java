@@ -4,14 +4,13 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.Loader;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -21,9 +20,16 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.FrameLayout;
+import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -34,7 +40,12 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
+
+import de.lima_city.breidinga.alpacar.data.FahrtenAdapter;
+
 
 /**
  * Created by Addie on 19.10.2017.
@@ -46,6 +57,9 @@ public class FahrtenActivity extends AppCompatActivity implements NavigationView
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fahrten);
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -55,7 +69,18 @@ public class FahrtenActivity extends AppCompatActivity implements NavigationView
         toggle.syncState();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        getData();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            getData();
+            ListView fahrtListView = (ListView) findViewById(R.id.list);
+            fahrtListView.setEmptyView(findViewById(R.id.empty));
+            ProgressBar bar = (ProgressBar) findViewById(R.id.progress);
+            bar.setVisibility(View.VISIBLE);
+        } else {
+            ProgressBar bar = (ProgressBar) findViewById(R.id.progress);
+            bar.setVisibility(View.GONE);
+            TextView empty = (TextView) findViewById(R.id.empty);
+            empty.setText("No internet connection");}
+
 
     }
 
@@ -64,8 +89,9 @@ public class FahrtenActivity extends AppCompatActivity implements NavigationView
             @Override
             protected void onPostExecute(Object o) {
                 super.onPostExecute(o);
-                TextView view = (TextView) findViewById(R.id.Data);
-                view.setText(ans);
+                view(parseJSON(ans));
+                ProgressBar bar = (ProgressBar) findViewById(R.id.progress);
+                bar.setVisibility(View.GONE);
             }
 
             @Override
@@ -205,6 +231,49 @@ public class FahrtenActivity extends AppCompatActivity implements NavigationView
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+    private ArrayList<Fahrt> parseJSON(String data){
+        ArrayList<Fahrt> fahrten = new ArrayList<>();
+        try{
+            JSONArray result = new JSONArray(data);
+
+            for (int i = 0; i < result.length(); i++) {
+                JSONObject fahrt = result.getJSONObject(i);
+                String date = fahrt.getString("Datum");
+                String abfahrt = fahrt.getString("AbfahrtOrt");
+                String ankunft = fahrt.getString("AnkunftOrt");
+                int plaetze = fahrt.getInt("Plaetze");
+                int fahrerId = fahrt.getInt("Fahrer");
+                int id = fahrt.getInt("_id");
+                Fahrt fahrt1 = new Fahrt(id, Date.valueOf(date), abfahrt, ankunft, plaetze, fahrerId);
+                Log.d("FahrtenActivity", fahrt1.toString());
+                fahrten.add(fahrt1);
+            }
+        }catch (JSONException e){
+            e.printStackTrace();
+            return fahrten;
+        }
+        return fahrten;
+    }
+    private void view (final ArrayList<Fahrt> fahrten){
+
+
+        // Find a reference to the {@link ListView} in the layout
+        ListView fahrtenListView = (ListView) findViewById(R.id.list);
+
+        // Create a new {@link ArrayAdapter} of earthquakes
+        FahrtenAdapter adapter = new FahrtenAdapter(this, fahrten);
+        fahrtenListView.setAdapter(adapter);
+        fahrtenListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Fahrt item = fahrten.get(position);
+                //TODO: OnClick nutzen
+            }
+
+
+        });
+        fahrtenListView.setEmptyView( findViewById(R.id.empty));
     }
 
     public FahrtenActivity() {
