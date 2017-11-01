@@ -22,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -69,6 +70,7 @@ public class FahrtenActivity extends AppCompatActivity implements NavigationView
         toggle.syncState();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        findViewById(R.id.empty_linear).setVisibility(View.GONE);
         if (networkInfo != null && networkInfo.isConnected()) {
             getData();
             ListView fahrtListView = (ListView) findViewById(R.id.list);
@@ -273,7 +275,7 @@ public class FahrtenActivity extends AppCompatActivity implements NavigationView
 
 
         });
-        fahrtenListView.setEmptyView( findViewById(R.id.empty));
+        fahrtenListView.setEmptyView( findViewById(R.id.empty_linear));
     }
 
     public FahrtenActivity() {

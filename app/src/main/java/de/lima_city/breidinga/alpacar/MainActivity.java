@@ -207,6 +207,7 @@ public class MainActivity extends AppCompatActivity
                 uriBuilder.appendQueryParameter("AnkunftOrt", ankunftsOrt);
                 uriBuilder.appendQueryParameter("latAn", String.valueOf(latAn));
                 uriBuilder.appendQueryParameter("lonAn", String.valueOf(lonAn));
+                uriBuilder.appendQueryParameter("Plaetze", String.valueOf(((NumberPicker) findViewById(R.id.np)).getValue()));
                 uriBuilder.appendQueryParameter("Fahrer", String.valueOf(((Alpacar) getApplication()).getFahrerId()));
                 Uri uri = uriBuilder.build();
                 Log.d("uri", uri.toString());

@@ -17,6 +17,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     >
     <ListView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/list"
@@ -37,4 +39,22 @@
         android:layout_centerInParent="true"
         android:id="@+id/progress"
         android:indeterminate="true"/>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_centerInParent="true"
+        android:id="@+id/empty_linear"
+        android:orientation="vertical">
+        <ImageView
+            android:layout_width="128dp"
+            android:layout_height="128dp"
+            android:src="@drawable/sign_contractor"
+            android:scaleType="fitCenter"/>
+        <TextView
+            android:layout_marginTop="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hier ist leider Schluss, keine Fahrten mehr..." />
+    </LinearLayout>
 </RelativeLayout>
