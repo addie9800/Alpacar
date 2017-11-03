@@ -39,9 +39,15 @@ import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 
@@ -51,13 +57,17 @@ import okhttp3.Request;
 
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
 import static android.os.Build.VERSION_CODES.M;
+import static de.lima_city.breidinga.alpacar.R.id.fab;
 
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, DatePickerDialog.OnDateSetListener {
+    boolean update = false;
+    Fahrt fahrt;
     int buttonId;
     String abfahrtsOrt;
     String ankunftsOrt;
+    String ans;
     String datumAb;
     String datumRu;
     boolean login;
@@ -112,6 +122,7 @@ public class MainActivity extends AppCompatActivity
         picker.setMinValue(1);
         picker.setMaxValue(9);
 
+
         // Defining Floating Action Button
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -147,6 +158,14 @@ public class MainActivity extends AppCompatActivity
         places2.setFilter(typeFilter);
         places.setHint(getResources().getString(R.string.abfahrt_ort_hint));
         places2.setHint(getResources().getString(R.string.ziel_ort_hint));
+        if (getIntent().hasExtra("id")){
+            update = true;
+            fahrt = new Fahrt(getIntent().getIntExtra("id", -1), Date.valueOf(getIntent().getStringExtra("Datum")), getIntent().getStringExtra("Abfahrt"), getIntent().getStringExtra("Ankunft"), getIntent().getIntExtra("Plaetze", -1), getIntent().getIntExtra("FahrerId", -1));
+            ((NumberPicker) findViewById(R.id.np)).setValue(fahrt.getPlaetze());
+            ((TextView) findViewById(R.id.frame_datum_hinfahrt_text)).setText(fahrt.getDate().toString());
+            places.setText(fahrt.getAbfahrtsOrt());
+            places2.setText(fahrt.getAnkunftsOrt());
+        }
         places.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
@@ -219,6 +238,17 @@ public class MainActivity extends AppCompatActivity
     private void asyncTaskInsert(final Uri uri){
         AsyncTask<Uri, Void,Void> asyncTask = new AsyncTask<Uri, Void, Void>() {
             @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                Intent intent = new Intent(MainActivity.this, FahrtenActivity.class);
+                if (!fahrer){
+                    Log.d("Mitfahrer", ans);
+                    intent.putExtra("Result", ans);}
+                finish();
+                startActivity(intent);
+            }
+
+            @Override
             protected Void doInBackground(Uri... uris) {
                 URL url;
                 url = null;
@@ -231,14 +261,31 @@ public class MainActivity extends AppCompatActivity
                     Log.e("MainActivity.java", "Error creating URL");
                     return null;
                 }
-                OkHttpClient client = new OkHttpClient();
-                Request request = new Request.Builder()
-                        .url(url)
-                        .build();
-                try{
-                    client.newCall(request).execute();
-                }catch (IOException e){
-                    e.printStackTrace();
+                HttpURLConnection urlConnection = null;
+                InputStream inputStream = null;
+                try {
+                    urlConnection = (HttpURLConnection) url.openConnection();
+                    urlConnection.setReadTimeout(10000 /* milliseconds */);
+                    urlConnection.setConnectTimeout(15000 /* milliseconds */);
+                    urlConnection.setRequestMethod("GET");
+                    urlConnection.connect();
+                    if (urlConnection.getResponseCode() == 200) {
+                        inputStream = urlConnection.getInputStream();
+                        ans = readFromStream(inputStream);
+                        Log.d("test", ans);
+                    } else {
+                        Log.e("QueryUtils", "Error response code: " + urlConnection.getResponseCode());
+                    }
+
+                } catch (ProtocolException e) {
+                    Log.e("QueryUtils", "Problem with the protocol", e);
+                } catch (IOException e) {
+                    Log.e("QueryUtils", "Problem establishing the connection", e);
+
+                } finally {
+                    if (urlConnection != null) {
+                        urlConnection.disconnect();
+                    }
                 }
                 return null;
             }
@@ -280,6 +327,9 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+        if(update){
+            menu.add(Menu.NONE, 1, Menu.NONE, "Delete");
+        }
         return true;
     }
 
@@ -293,9 +343,37 @@ public class MainActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        }if (id == 1){
+            Uri.Builder builder = new Uri.Builder();
+            builder.scheme("https")
+                    .authority("breidinga.lima-city.de")
+                    .appendPath("Datenbank");
+                builder.appendPath("fahrten.php");
+            Uri baseUri = builder.build();
+            Uri.Builder uriBuilder = baseUri.buildUpon();
+            uriBuilder.appendQueryParameter("mode", "delete");
+            uriBuilder.appendQueryParameter("_id", String.valueOf(fahrt.get_id()));
+            uriBuilder.appendQueryParameter("AbfahrtOrt", abfahrtsOrt);
+            Uri uri = uriBuilder.build();
+            Log.d("uri", uri.toString());
+            asyncTaskInsert(uri);
         }
 
         return super.onOptionsItemSelected(item);
+    }
+    private static String readFromStream(InputStream stream) throws IOException {
+        StringBuilder builder = new StringBuilder();
+        if (stream != null) {
+            InputStreamReader reader = new InputStreamReader(stream, Charset.forName("UTF-8"));
+            BufferedReader reader1 = new BufferedReader(reader);
+            String line = reader1.readLine();
+            while (line != null) {
+                builder.append(line);
+                line = reader1.readLine();
+            }
+            return builder.toString();
+        }
+        return null;
     }
 
     @SuppressWarnings("StatementWithEmptyBody")

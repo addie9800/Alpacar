@@ -54,6 +54,7 @@ import de.lima_city.breidinga.alpacar.data.FahrtenAdapter;
 
 public class FahrtenActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     String ans;
+    boolean fahrer;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,17 +72,26 @@ public class FahrtenActivity extends AppCompatActivity implements NavigationView
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         findViewById(R.id.empty_linear).setVisibility(View.GONE);
-        if (networkInfo != null && networkInfo.isConnected()) {
-            getData();
-            ListView fahrtListView = (ListView) findViewById(R.id.list);
-            fahrtListView.setEmptyView(findViewById(R.id.empty));
-            ProgressBar bar = (ProgressBar) findViewById(R.id.progress);
-            bar.setVisibility(View.VISIBLE);
-        } else {
+        if (getIntent().hasExtra("Result")){
+            fahrer = false;
+            view(parseJSON(getIntent().getStringExtra("Result")));
             ProgressBar bar = (ProgressBar) findViewById(R.id.progress);
             bar.setVisibility(View.GONE);
-            TextView empty = (TextView) findViewById(R.id.empty);
-            empty.setText("No internet connection");}
+        }
+        else{
+            fahrer = true;
+            if (networkInfo != null && networkInfo.isConnected()) {
+                getData();
+                ListView fahrtListView = (ListView) findViewById(R.id.list);
+                fahrtListView.setEmptyView(findViewById(R.id.empty));
+                ProgressBar bar = (ProgressBar) findViewById(R.id.progress);
+                bar.setVisibility(View.VISIBLE);
+            } else {
+                ProgressBar bar = (ProgressBar) findViewById(R.id.progress);
+                bar.setVisibility(View.GONE);
+                TextView empty = (TextView) findViewById(R.id.empty);
+                empty.setText("No internet connection");}
+        }
 
 
     }
@@ -269,7 +279,18 @@ public class FahrtenActivity extends AppCompatActivity implements NavigationView
         fahrtenListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Fahrt item = fahrten.get(position);
+                if (fahrer){
+                    Fahrt item = fahrten.get(position);
+                    Intent intent = new Intent(FahrtenActivity.this, MainActivity.class);
+                    intent.putExtra("id", item.get_id());
+                    intent.putExtra("Abfahrt", item.getAbfahrtsOrt());
+                    intent.putExtra("Ankunft", item.getAnkunftsOrt());
+                    intent.putExtra("Datum", item.getDate().toString());
+                    intent.putExtra("FahrerId", item.getFahrerId());
+                    intent.putExtra("Plaetze", item.getPlaetze());
+                    finish();
+                    startActivity(intent);
+                }
                 //TODO: OnClick nutzen
             }
 

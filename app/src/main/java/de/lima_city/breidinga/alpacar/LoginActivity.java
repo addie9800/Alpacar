@@ -113,6 +113,7 @@ public class LoginActivity extends AppCompatActivity {
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
                 ans = ans.replace("\"", "");
+                ans = ans.replace(" ", "");
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 SharedPreferences.Editor editor = (getBaseContext().getSharedPreferences("USER_DATA", Context.MODE_PRIVATE)).edit();
                 editor.putBoolean("login", true);
