@@ -13,6 +13,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -52,9 +53,12 @@ import de.lima_city.breidinga.alpacar.data.FahrtenAdapter;
  * Created by Addie on 19.10.2017.
  */
 
-public class FahrtenActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class FahrtenActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SwipeRefreshLayout.OnRefreshListener {
     String ans;
     boolean fahrer;
+
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +76,8 @@ public class FahrtenActivity extends AppCompatActivity implements NavigationView
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         findViewById(R.id.empty_linear).setVisibility(View.GONE);
+        SwipeRefreshLayout layout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
+        layout.setOnRefreshListener(this);
         if (getIntent().hasExtra("Result")){
             fahrer = false;
             view(parseJSON(getIntent().getStringExtra("Result")));
@@ -174,7 +180,11 @@ public class FahrtenActivity extends AppCompatActivity implements NavigationView
         }
         return null;
     }
-
+    @Override
+    public void onRefresh() {
+        getData();
+        ((SwipeRefreshLayout) findViewById(R.id.swiperefresh)).setRefreshing(false);
+    }
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -215,11 +225,14 @@ public class FahrtenActivity extends AppCompatActivity implements NavigationView
 
         if (id == R.id.nav_new_fahrt) {
             Intent intent = new Intent(FahrtenActivity.this, MainActivity.class);
+            finish();
             startActivity(intent);
         } else if (id == R.id.nav_meine_fahrten) {
 
         } else if (id == R.id.nav_slideshow) {
-
+            Intent intent = new Intent(FahrtenActivity.this, CreditsActivity.class);
+            finish();
+            startActivity(intent);
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {

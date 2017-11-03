@@ -12,8 +12,8 @@
             android:title="@string/menu_meine_fahrten" />
         <item
             android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
+            android:icon="@drawable/paragraph_symbol"
+            android:title="Impressum" />
         <item
             android:id="@+id/nav_manage"
             android:icon="@drawable/ic_menu_manage"

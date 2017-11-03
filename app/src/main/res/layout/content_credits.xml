@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:scaleType="fitStart"
+            android:src="@drawable/alpen"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Alp a Car 2017 \n Vielen Dank für Ihr Interesse an den Alpen"
+        android:gravity="center"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Kontakt: \t abindiealpen2017@gmail.com "
+            android:gravity="start"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:text="Image Credits: \n \n'Sign Contractor' made by https://www.flaticon.com/authors/freepik from www.flaticon.com \n 'Menu' made by https://www.flaticon.com/authors/those-icons from www.flaticon.com \n 'Logout' made by https://www.flaticon.com/authors/gregor-cresnar from www.flaticon.com \n 'Jeep' made by https://www.flaticon.com/authors/freepik from www.flaticon.com \n 'Listing Option' made by https://www.flaticon.com/authors/dave-gandy from www.flaticon.com \n 'Paragraph Symbol' made by https://www.flaticon.com/authors/picol from www.flaticon.com"
+            android:gravity="start"
+            />
+
+
+    </LinearLayout>
+</ScrollView>

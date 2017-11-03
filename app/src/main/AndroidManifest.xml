@@ -30,6 +30,8 @@
         <activity
             android:name=".FahrtenActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".CreditsActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
 
         <activity
             android:name=".Content"

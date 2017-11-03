@@ -132,7 +132,6 @@ public class MainActivity extends AppCompatActivity
                 validateData();
                 Toast toast =  Toast.makeText(getBaseContext(), "Enter", Toast.LENGTH_LONG);
                 toast.show();
-                //TODO: Feed database
             }
         });
 
@@ -162,9 +161,12 @@ public class MainActivity extends AppCompatActivity
             update = true;
             fahrt = new Fahrt(getIntent().getIntExtra("id", -1), Date.valueOf(getIntent().getStringExtra("Datum")), getIntent().getStringExtra("Abfahrt"), getIntent().getStringExtra("Ankunft"), getIntent().getIntExtra("Plaetze", -1), getIntent().getIntExtra("FahrerId", -1));
             ((NumberPicker) findViewById(R.id.np)).setValue(fahrt.getPlaetze());
-            ((TextView) findViewById(R.id.frame_datum_hinfahrt_text)).setText(fahrt.getDate().toString());
+            ((TextView) findViewById(R.id.frame_datum_hinfahrt_text)).setText(formatDate(fahrt.getDate().toString()));
             places.setText(fahrt.getAbfahrtsOrt());
             places2.setText(fahrt.getAnkunftsOrt());
+            TextView button = (TextView) findViewById(R.id.frame_datum_hinfahrt_text);
+            button.setTextColor(getResources().getColor(R.color.colorTwoEingeloggt));
+            (findViewById(R.id.frame_datum_hinfahrt)).setBackgroundColor(getResources().getColor(R.color.colorOneEingeloggt));
         }
         places.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
@@ -296,8 +298,15 @@ public class MainActivity extends AppCompatActivity
     private String formatDate() {
         TextView DatumHinfahrtText = (TextView) findViewById(R.id.frame_datum_hinfahrt_text);
         String datumHinfahrt = DatumHinfahrtText.getText().toString();
-        String oldFormat = "dd/MM/yyyy";
-        String newFormat = "yyyy-MM-dd";
+        String oldFormat;
+        String newFormat;
+        if(!update){
+            oldFormat = "dd/MM/yyyy";
+            newFormat = "yyyy-MM-dd";}
+        else {
+            newFormat = "dd/MM/yyyy";
+            oldFormat = "yyyy-MM-dd";
+        }
         String formattedDate = "";
         SimpleDateFormat dateFormat = new SimpleDateFormat(oldFormat);
         java.util.Date myDate = null;
@@ -309,6 +318,28 @@ public class MainActivity extends AppCompatActivity
         SimpleDateFormat timeFormat = new SimpleDateFormat(newFormat);
         formattedDate = timeFormat.format(myDate);
         return formattedDate;
+        }
+        private String formatDate(String string){
+            String oldFormat;
+            String newFormat;
+            if(!update){
+                oldFormat = "dd/MM/yyyy";
+                newFormat = "yyyy-MM-dd";}
+            else {
+                newFormat = "dd/MM/yyyy";
+                oldFormat = "yyyy-MM-dd";
+            }
+            String formattedDate = "";
+            SimpleDateFormat dateFormat = new SimpleDateFormat(oldFormat);
+            java.util.Date myDate = null;
+            try {
+                myDate = dateFormat.parse(string);
+            } catch (java.text.ParseException e) {
+                e.printStackTrace();
+            }
+            SimpleDateFormat timeFormat = new SimpleDateFormat(newFormat);
+            formattedDate = timeFormat.format(myDate);
+            return formattedDate;
         }
 
 
@@ -386,9 +417,12 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_meine_fahrten) {
             Intent intent = new Intent(MainActivity.this, FahrtenActivity.class);
+            finish();
             startActivity(intent);
         } else if (id == R.id.nav_slideshow) {
-
+            Intent intent = new Intent(MainActivity.this, CreditsActivity.class);
+            finish();
+            startActivity(intent);
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {
