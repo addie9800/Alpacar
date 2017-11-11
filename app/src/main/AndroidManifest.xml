@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="de.lima_city.breidinga.alpacar">
+    package="de.lima_city.breidinga.alpacar"
+    android:installLocation="auto">
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <application
@@ -13,7 +14,7 @@
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDw-nQKkQSLS_nSRrtU8e8DW2GAsA65lPw"/>
+            android:value="AIzaSyDw-nQKkQSLS_nSRrtU8e8DW2GAsA65lPw" />
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"

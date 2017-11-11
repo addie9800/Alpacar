@@ -78,6 +78,7 @@ public class MainActivity extends AppCompatActivity
     double latAn;
     double lonAb;
     double lonAn;
+    int plaetze;
 
    ////// EditText sitze = (EditText) findViewById(R.id.sitze);
    // String abfahrt;
@@ -164,6 +165,7 @@ public class MainActivity extends AppCompatActivity
             ((TextView) findViewById(R.id.frame_datum_hinfahrt_text)).setText(formatDate(fahrt.getDate().toString()));
             places.setText(fahrt.getAbfahrtsOrt());
             places2.setText(fahrt.getAnkunftsOrt());
+            Toast.makeText(this,"Bitte bestätigen Sie die beiden Orte", Toast.LENGTH_LONG);
             TextView button = (TextView) findViewById(R.id.frame_datum_hinfahrt_text);
             button.setTextColor(getResources().getColor(R.color.colorTwoEingeloggt));
             (findViewById(R.id.frame_datum_hinfahrt)).setBackgroundColor(getResources().getColor(R.color.colorOneEingeloggt));
@@ -228,7 +230,8 @@ public class MainActivity extends AppCompatActivity
                 uriBuilder.appendQueryParameter("AnkunftOrt", ankunftsOrt);
                 uriBuilder.appendQueryParameter("latAn", String.valueOf(latAn));
                 uriBuilder.appendQueryParameter("lonAn", String.valueOf(lonAn));
-                uriBuilder.appendQueryParameter("Plaetze", String.valueOf(((NumberPicker) findViewById(R.id.np)).getValue()));
+                plaetze = ((NumberPicker) findViewById(R.id.np)).getValue();
+                uriBuilder.appendQueryParameter("Plaetze", String.valueOf(plaetze));
                 uriBuilder.appendQueryParameter("Fahrer", String.valueOf(((Alpacar) getApplication()).getFahrerId()));
                 Uri uri = uriBuilder.build();
                 Log.d("uri", uri.toString());
@@ -245,7 +248,8 @@ public class MainActivity extends AppCompatActivity
                 Intent intent = new Intent(MainActivity.this, FahrtenActivity.class);
                 if (!fahrer){
                     Log.d("Mitfahrer", ans);
-                    intent.putExtra("Result", ans);}
+                    intent.putExtra("Result", ans);
+                    intent.putExtra("Plaetze", plaetze);}
                 finish();
                 startActivity(intent);
             }

@@ -1,7 +1,9 @@
 package de.lima_city.breidinga.alpacar;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
@@ -15,6 +17,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -103,6 +106,28 @@ public class FahrtenActivity extends AppCompatActivity implements NavigationView
     }
 
     private void getData(){
+        URL url;
+        Uri.Builder builder = new Uri.Builder();
+        builder.scheme("https")
+                .authority("breidinga.lima-city.de")
+                .appendPath("Datenbank")
+                .appendPath("fahrten.php");
+        Uri baseUri = builder.build();
+        Uri.Builder uriBuilder = baseUri.buildUpon();
+        uriBuilder.appendQueryParameter("mode", "query");
+        uriBuilder.appendQueryParameter("fahrer", String.valueOf(((Alpacar) getApplication()).getFahrerId()));
+        final Uri uri = uriBuilder.build();
+        Log.d("FahrtenActivity", uri.toString());
+        try{
+            url = new URL(uri.toString());}
+        catch (MalformedURLException u){
+            u.printStackTrace();
+            Toast.makeText(getBaseContext(), "Error Creating URL", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        loader(url);
+    }
+    private void loader(final URL url){
         AsyncTask loader = new AsyncTask() {
             @Override
             protected void onPostExecute(Object o) {
@@ -114,25 +139,6 @@ public class FahrtenActivity extends AppCompatActivity implements NavigationView
 
             @Override
             protected Object doInBackground(Object[] objects) {
-                URL url;
-                Uri.Builder builder = new Uri.Builder();
-                builder.scheme("https")
-                        .authority("breidinga.lima-city.de")
-                        .appendPath("Datenbank")
-                        .appendPath("fahrten.php");
-                Uri baseUri = builder.build();
-                Uri.Builder uriBuilder = baseUri.buildUpon();
-                uriBuilder.appendQueryParameter("mode", "query");
-                uriBuilder.appendQueryParameter("fahrer", String.valueOf(((Alpacar) getApplication()).getFahrerId()));
-                final Uri uri = uriBuilder.build();
-                Log.d("FahrtenActivity", uri.toString());
-                try{
-                    url = new URL(uri.toString());}
-                catch (MalformedURLException u){
-                    u.printStackTrace();
-                    Toast.makeText(getBaseContext(), "Error Creating URL", Toast.LENGTH_SHORT).show();
-                    return null;
-                }
 
                 // new try
                 HttpURLConnection urlConnection = null;
@@ -164,8 +170,8 @@ public class FahrtenActivity extends AppCompatActivity implements NavigationView
                 return null;            }
         };
         loader.execute();
-    }
 
+    }
     private static String readFromStream(InputStream stream) throws IOException {
         StringBuilder builder = new StringBuilder();
         if (stream != null) {
@@ -182,8 +188,9 @@ public class FahrtenActivity extends AppCompatActivity implements NavigationView
     }
     @Override
     public void onRefresh() {
+        if(fahrer){
         getData();
-        ((SwipeRefreshLayout) findViewById(R.id.swiperefresh)).setRefreshing(false);
+        ((SwipeRefreshLayout) findViewById(R.id.swiperefresh)).setRefreshing(false);}
     }
     @Override
     public void onBackPressed() {
@@ -287,13 +294,13 @@ public class FahrtenActivity extends AppCompatActivity implements NavigationView
         ListView fahrtenListView = (ListView) findViewById(R.id.list);
 
         // Create a new {@link ArrayAdapter} of earthquakes
-        FahrtenAdapter adapter = new FahrtenAdapter(this, fahrten);
+        final FahrtenAdapter adapter = new FahrtenAdapter(this, fahrten);
         fahrtenListView.setAdapter(adapter);
         fahrtenListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                final Fahrt item = fahrten.get(position);
                 if (fahrer){
-                    Fahrt item = fahrten.get(position);
                     Intent intent = new Intent(FahrtenActivity.this, MainActivity.class);
                     intent.putExtra("id", item.get_id());
                     intent.putExtra("Abfahrt", item.getAbfahrtsOrt());
@@ -303,6 +310,55 @@ public class FahrtenActivity extends AppCompatActivity implements NavigationView
                     intent.putExtra("Plaetze", item.getPlaetze());
                     finish();
                     startActivity(intent);
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(FahrtenActivity.this, R.style.MyAlertDialogStyle);
+                    builder.setTitle("Sind Sie sicher?");
+                    builder.setMessage("Wollen Sie hier mitfahren?");
+                    builder.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            URL url;
+                            Uri.Builder builder = new Uri.Builder();
+                            builder.scheme("https")
+                                    .authority("breidinga.lima-city.de")
+                                    .appendPath("Datenbank")
+                                    .appendPath("fahrten.php");
+                            Uri baseUri = builder.build();
+                            Uri.Builder uriBuilder = baseUri.buildUpon();
+                            uriBuilder.appendQueryParameter("mode", "update");
+                            uriBuilder.appendQueryParameter("_id", String.valueOf(item.get_id()));
+                            uriBuilder.appendQueryParameter("Plaetze", String.valueOf(item.getPlaetze() - getIntent().getIntExtra("Plaetze", 0)));
+                            final Uri uri = uriBuilder.build();
+                            Log.d("FahrtenActivity", uri.toString());
+                            try{
+                                url = new URL(uri.toString());}
+                            catch (MalformedURLException u) {
+                                u.printStackTrace();
+                                Toast.makeText(getBaseContext(), "Error Creating URL", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                            loader(url);
+
+                            //TODO: Neue Anzahl Mitfahrer aktualisieren
+                            adapter.clear();
+                            getData();
+                        }
+                    });
+                    builder.setNegativeButton("Nein", null);
+                    builder.show();
+                    builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialogInterface) {
+                            Log.d("FahrtenActivity", "OnDismiss called");
+                        }
+                    });
+                    builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                        @Override
+                        public void onCancel(DialogInterface dialogInterface) {
+                            Log.d("FahrtenActivity", "OnCancel called");
+                        }
+                    });
+                    //adapter.clear();
                 }
                 //TODO: OnClick nutzen
             }
