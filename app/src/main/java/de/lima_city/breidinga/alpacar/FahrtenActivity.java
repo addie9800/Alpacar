@@ -325,6 +325,8 @@ public class FahrtenActivity extends AppCompatActivity implements NavigationView
                             Uri baseUri = builder.build();
                             Uri.Builder uriBuilder = baseUri.buildUpon();
                             uriBuilder.appendQueryParameter("mode", "update");
+                            uriBuilder.appendQueryParameter("Fahrer", String.valueOf(item.getFahrerId()));
+                            uriBuilder.appendQueryParameter("Mitfahrer", String.valueOf(((Alpacar) getApplication()).getFahrerId()));
                             uriBuilder.appendQueryParameter("_id", String.valueOf(item.get_id()));
                             uriBuilder.appendQueryParameter("Plaetze", String.valueOf(item.getPlaetze() - getIntent().getIntExtra("Plaetze", 0)));
                             final Uri uri = uriBuilder.build();
