@@ -106,7 +106,7 @@ public class FahrtenActivity extends AppCompatActivity implements NavigationView
     }
 
     private void getData(){
-        URL url;
+        final URL url;
         Uri.Builder builder = new Uri.Builder();
         builder.scheme("https")
                 .authority("breidinga.lima-city.de")
@@ -125,9 +125,6 @@ public class FahrtenActivity extends AppCompatActivity implements NavigationView
             Toast.makeText(getBaseContext(), "Error Creating URL", Toast.LENGTH_SHORT).show();
             return;
         }
-        loader(url);
-    }
-    private void loader(final URL url){
         AsyncTask loader = new AsyncTask() {
             @Override
             protected void onPostExecute(Object o) {
@@ -169,7 +166,9 @@ public class FahrtenActivity extends AppCompatActivity implements NavigationView
                 }
                 return null;            }
         };
-        loader.execute();
+        loader.execute();    }
+    private void loader(final URL url){
+
 
     }
     private static String readFromStream(InputStream stream) throws IOException {
@@ -317,7 +316,7 @@ public class FahrtenActivity extends AppCompatActivity implements NavigationView
                     builder.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            URL url;
+                            final URL url;
                             Uri.Builder builder = new Uri.Builder();
                             builder.scheme("https")
                                     .authority("breidinga.lima-city.de")
@@ -337,8 +336,48 @@ public class FahrtenActivity extends AppCompatActivity implements NavigationView
                                 Toast.makeText(getBaseContext(), "Error Creating URL", Toast.LENGTH_SHORT).show();
                                 return;
                             }
-                            loader(url);
+                            AsyncTask loader = new AsyncTask() {
+                                @Override
+                                protected void onPostExecute(Object o) {
+                                    super.onPostExecute(o);
+                                    view(parseJSON(ans));
+                                    ProgressBar bar = (ProgressBar) findViewById(R.id.progress);
+                                    bar.setVisibility(View.GONE);
+                                }
 
+                                @Override
+                                protected Object doInBackground(Object[] objects) {
+
+                                    // new try
+                                    HttpURLConnection urlConnection = null;
+                                    InputStream inputStream = null;
+                                    try {
+                                        urlConnection = (HttpURLConnection) url.openConnection();
+                                        urlConnection.setReadTimeout(10000 /* milliseconds */);
+                                        urlConnection.setConnectTimeout(15000 /* milliseconds */);
+                                        urlConnection.setRequestMethod("GET");
+                                        urlConnection.connect();
+                                        if (urlConnection.getResponseCode() == 200) {
+                                            inputStream = urlConnection.getInputStream();
+                                            ans = readFromStream(inputStream);
+                                            Log.d("test", ans);
+                                        } else {
+                                            Log.e("QueryUtils", "Error response code: " + urlConnection.getResponseCode());
+                                        }
+
+                                    } catch (ProtocolException e) {
+                                        Log.e("QueryUtils", "Problem with the protocol", e);
+                                    } catch (IOException e) {
+                                        Log.e("QueryUtils", "Problem establishing the connection", e);
+
+                                    } finally {
+                                        if (urlConnection != null) {
+                                            urlConnection.disconnect();
+                                        }
+                                    }
+                                    return null;            }
+                            };
+                            loader.execute();
                             //TODO: Neue Anzahl Mitfahrer aktualisieren
                             adapter.clear();
                             getData();
