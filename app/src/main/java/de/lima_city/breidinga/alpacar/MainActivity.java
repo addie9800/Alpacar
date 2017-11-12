@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity
         ConnectivityManager connMgr = (ConnectivityManager)
                 getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected()) {
+        if (!(networkInfo != null && networkInfo.isConnected())) {
             Toast.makeText(this, "No Internet Connection", Toast.LENGTH_LONG).show();
         }
             try{
