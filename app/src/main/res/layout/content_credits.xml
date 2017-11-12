@@ -33,12 +33,27 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:text="Über uns:\n Im Entwicklungsteam von Alp a Car befinden sich sechs Visionäre des Julius-Spiegelberg-Gymnasiums Vechelde, die im Rahmen des Seminarfachs Sport in den Alpen ein Proejkt zur Verbesserung der Klimaeffizienz des Alpentourismus entwickeln."
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"
             android:text="Image Credits: \n \n'Sign Contractor' made by https://www.flaticon.com/authors/freepik from www.flaticon.com \n 'Menu' made by https://www.flaticon.com/authors/those-icons from www.flaticon.com \n 'Logout' made by https://www.flaticon.com/authors/gregor-cresnar from www.flaticon.com \n 'Jeep' made by https://www.flaticon.com/authors/freepik from www.flaticon.com \n 'Listing Option' made by https://www.flaticon.com/authors/dave-gandy from www.flaticon.com \n 'Paragraph Symbol' made by https://www.flaticon.com/authors/picol from www.flaticon.com"
             android:gravity="start"
             />
-
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:text="Zum Team gehören:\n\n Adrian Breiding (Executive Chief of Programming) \n Lasse Lemke (Head of Organization and Timemanagement \n Linus Trauberg (Head of Creativity Department) \n Jonas Woltmann (Chief of legal Transactions) \n Tim Wanagat (Head Facility Manager) \n Jonas Bastian (Decoration)"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"/>
 
     </LinearLayout>
 </ScrollView>
