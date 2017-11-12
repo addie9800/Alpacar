@@ -187,9 +187,8 @@ public class FahrtenActivity extends AppCompatActivity implements NavigationView
     }
     @Override
     public void onRefresh() {
-        if(fahrer){
         getData();
-        ((SwipeRefreshLayout) findViewById(R.id.swiperefresh)).setRefreshing(false);}
+        ((SwipeRefreshLayout) findViewById(R.id.swiperefresh)).setRefreshing(false);
     }
     @Override
     public void onBackPressed() {

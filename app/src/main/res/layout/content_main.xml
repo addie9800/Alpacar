@@ -15,13 +15,11 @@
     tools:showIn="@layout/app_bar_main"
     android:weightSum="1">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:orientation="horizontal">
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            android:paddingTop="25dp"
+            android:paddingBottom="25dp"
             android:background="@color/colorTwoEingeloggt"
             android:layout_weight="1"
             android:id="@+id/frame_datum_hinfahrt">
@@ -34,23 +32,6 @@
                 android:text="@string/datum_hinfahrt_hint"
                 android:textSize="25sp"/>
         </FrameLayout>
-        <View style="@style/DividerV"/>
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorTwoEingeloggt"
-            android:id="@+id/frame_datum_rueckfahrt">
-            <TextView
-                android:layout_width="wrap_content"
-                android:id="@+id/frame_datum_rueckfahrt_text"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/datum_rueckfahrt_hint"
-                android:textColor="@color/colorOneEingeloggt"
-                android:textSize="25sp"/>
-        </FrameLayout>
-    </LinearLayout>
     <View style="@style/DividerH"/>
     <fragment
         android:id="@+id/place_autocomplete_fragment"

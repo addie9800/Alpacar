@@ -118,7 +118,6 @@ public class MainActivity extends AppCompatActivity
         final FrameLayout radioFahrer = (FrameLayout) findViewById(R.id.frame_fahrer);
         FrameLayout radioMitfahrer = (FrameLayout) findViewById(R.id.frame_mitfahrer);
         FrameLayout hinfahrt = (FrameLayout) findViewById(R.id.frame_datum_hinfahrt);
-        FrameLayout rueckfahrt = (FrameLayout) findViewById(R.id.frame_datum_rueckfahrt);
         NumberPicker picker = (NumberPicker) findViewById(R.id.np);
         picker.setMinValue(1);
         picker.setMaxValue(9);
@@ -140,7 +139,6 @@ public class MainActivity extends AppCompatActivity
 //TODO: Alpenhörner soundeffekte
 
         hinfahrt.setOnClickListener(this);
-       rueckfahrt.setOnClickListener(this);
            radioFahrer.setOnClickListener(this);
             radioMitfahrer.setOnClickListener(this);
 
@@ -468,9 +466,6 @@ public class MainActivity extends AppCompatActivity
             case R.id.frame_datum_hinfahrt:
                 dialog.show();
                 break;
-            case R.id.frame_datum_rueckfahrt:
-                dialog.show();
-                break;
             case R.id.frame_fahrer:
                 text.setText(R.string.freie_plaetze);
                 fahrer = true;
@@ -499,13 +494,6 @@ public class MainActivity extends AppCompatActivity
                 TextView button = (TextView) findViewById(R.id.frame_datum_hinfahrt_text);
                 button.setText(i2 + "/" + (i1 + 1) + "/" + i);
                 button.setTextColor(getResources().getColor(R.color.colorTwoEingeloggt));
-                layout.setBackgroundColor(getResources().getColor(R.color.colorOneEingeloggt));
-                break;
-            case R.id.frame_datum_rueckfahrt:
-                TextView button1 = (TextView) findViewById(R.id.frame_datum_rueckfahrt_text);
-                button1.setText(i2 + "/" + (i1 + 1) + "/" + i);
-                datumRu = i + "-" + (i1 + 1) + "-" + i2;
-                button1.setTextColor(getResources().getColor(R.color.colorTwoEingeloggt));
                 layout.setBackgroundColor(getResources().getColor(R.color.colorOneEingeloggt));
                 break;
         }

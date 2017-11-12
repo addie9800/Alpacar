@@ -21,11 +21,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PushbackInputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.Charset;
+
+import de.lima_city.breidinga.alpacar.data.UnicodeBOMInputStream;
 
 /**
  * Created by Addie on 30.09.2017.
@@ -212,17 +215,20 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
+                Log.d("test2", ans);
                 ans = ans.replace(" ", "");
+                ans = ans.replace("\"", "");
                 Log.d("test2", ans);
                 if (!(ans.equals("false")) || !(ans.equals(""))) {
-                    ans = ans.replace("\"", "");
+                    ans = ans.replace("\"", "").trim();
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     SharedPreferences.Editor editor = (getBaseContext().getSharedPreferences("USER_DATA", Context.MODE_PRIVATE)).edit();
                     editor.putBoolean("login", true);
-                    editor.putInt("fahrerId", Integer.parseInt(ans));
+                    int fahrer = Integer.valueOf(ans.toString());
+                    editor.putInt("fahrerId", fahrer);
                     editor.clear().apply();
                     ((Alpacar) getApplication()).setLoginState(true);
-                    ((Alpacar) getApplication()).setFahrerId(Integer.parseInt(ans));
+                    ((Alpacar) getApplication()).setFahrerId(fahrer);
                     Toast.makeText(getBaseContext(), "Login successful", Toast.LENGTH_LONG).show();
                     finish();
                     startActivity(intent);
@@ -257,6 +263,8 @@ public class LoginActivity extends AppCompatActivity {
                     urlConnection.connect();
                     if (urlConnection.getResponseCode() == 200) {
                         inputStream = urlConnection.getInputStream();
+                        UnicodeBOMInputStream bomInputStream = new UnicodeBOMInputStream(inputStream);
+                        bomInputStream.skipBOM();
                         ans = readFromStream(inputStream);
                         Log.d("test", ans);
                     } else {
@@ -278,7 +286,6 @@ public class LoginActivity extends AppCompatActivity {
         };
         asyncTask.execute(uri);
     }
-
     private static String readFromStream(InputStream stream) throws IOException {
         StringBuilder builder = new StringBuilder();
         if (stream != null) {
@@ -293,4 +300,5 @@ public class LoginActivity extends AppCompatActivity {
         }
         return null;
     }
+
 }

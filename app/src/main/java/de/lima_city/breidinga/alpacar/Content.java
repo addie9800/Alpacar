@@ -44,9 +44,7 @@ public class Content extends AppCompatActivity implements DatePickerDialog.OnDat
                 TextView hinfahrt = (TextView) findViewById(R.id.frame_datum_hinfahrt_text);
                 hinfahrt.setText("Datum Hinfahrt \n"+ datePicker.getDayOfMonth() + "/" + (datePicker.getMonth() + 1) + "/" + datePicker.getYear());
                 break;
-            case R.id.frame_datum_rueckfahrt:
-                TextView rueckfahrt = (TextView) findViewById(R.id.frame_datum_rueckfahrt_text);
-                rueckfahrt.setText("Datum Rückfahrt \n" + datePicker.getDayOfMonth() + "/" + (datePicker.getMonth() + 1) + "/" + datePicker.getYear());
+
         }
     }
 
