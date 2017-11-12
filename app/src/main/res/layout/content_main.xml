@@ -99,14 +99,32 @@
         android:orientation="horizontal"
         android:layout_margin="10dp">
 
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:maxLines="1"
+            android:inputType="number"
+            android:id="@+id/number"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textSize="25sp" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textSize="25sp"
             android:text="@string/freie_plaetze"
             android:id="@+id/edit_text_hint"
             android:layout_gravity="center_vertical"/>
-        <FrameLayout
+
+    </LinearLayout>
+
+    <!-- TODO: TableRow oder Rechtecke -->
+</LinearLayout>
+</ScrollView>
+<!--<FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1">
@@ -116,14 +134,4 @@
                 android:weightSum="1"
                 android:orientation="horizontal"
                 android:id="@+id/np"/>
-        </FrameLayout>
-    </LinearLayout>
-
-    <!-- TODO: TableRow oder Rechtecke -->
-
-<EditText
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:id="@+id/sitze"/>
-</LinearLayout>
-</ScrollView>
+        </FrameLayout>-->

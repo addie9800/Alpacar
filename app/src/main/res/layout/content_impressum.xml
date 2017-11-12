@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Allgemeine Geschäftsbedingungen:\n\n
+
+Die Betreiber dieser App nehmen den Schutz Ihrer persönlichen Daten sehr ernst. Wir behandeln Ihre personenbezogenen Daten vertraulich und entsprechend der gesetzlichen Datenschutzvorschriften sowie dieser Datenschutzerklärung.
+Zur Nutzung dieser App ist das Angeben Ihrer E-Mail-Adresse notwendig, da sie im Fall einer Mitfahrgelegenheit von uns informiert werden. Diese Daten werden ohne Ihre ausdrückliche Zustimmung nicht an Dritte weitergegeben.
+Wir weisen darauf hin, dass die Datenübertragung im Internet (z.B. bei der Kommunikation per E-Mail) Sicherheitslücken aufweisen kann. Ein lückenloser Schutz der Daten vor dem Zugriff durch Dritte ist nicht möglich.
+\n\n
+Auskunft, Löschung, Sperrung\n
+Sie haben jederzeit das Recht auf unentgeltliche Auskunft über Ihre gespeicherten personenbezogenen Daten, deren Herkunft und Empfänger und den Zweck der Datenverarbeitung sowie ein Recht auf Berichtigung, Sperrung oder Löschung dieser Daten. Hierzu sowie zu weiteren Fragen zum Thema personenbezogene Daten können Sie sich jederzeit unter der im Impressum angegebenen Adresse an uns wenden.
+\n\n
+Cookies\n
+Diese App verwendet teilweise so genannte Cookies. Cookies richten auf Ihrem Mobiltelefon keinen Schaden an und enthalten keine Viren. Cookies dienen dazu, unser Angebot nutzerfreundlicher, effektiver und sicherer zu machen. Cookies sind kleine Textdateien, die auf dem Speicher Ihres Mobiltelefons abgelegt werden und welche die App speichert.
+Die Cookies bleiben auf Ihrem Endgerät gespeichert, bis Sie diese löschen. Diese Cookies ermöglichen es uns, Ihr Mobiltelefon beim nächsten Besuch wiederzuerkennen.
+ \n\n
+Haftung\n
+Für die Folgen von Missbrauch dieser App wird keine Haftung übernommen. Die Nutzung ist auf eigene Gefahr. Wir übernehmen kein Haftung sowie möglicherweise entstandene Kosten bei Nichtantritt von Fahrten durch Nutzer dieser App.
+
+"/>
+</ScrollView>

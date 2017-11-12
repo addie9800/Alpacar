@@ -95,7 +95,7 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        String vname = vorname.getText().toString();
+        final String vname = vorname.getText().toString();
         String nname = nachname.getText().toString();
         Uri.Builder builder = new Uri.Builder();
         builder.scheme("https")
@@ -121,9 +121,11 @@ public class LoginActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = (getBaseContext().getSharedPreferences("USER_DATA", Context.MODE_PRIVATE)).edit();
                 editor.putBoolean("login", true);
                 editor.putInt("fahrerId", Integer.parseInt(ans));
+                editor.putString("name", vname);
                 editor.clear().apply();
                 ((Alpacar) getApplication()).setLoginState(true);
                 ((Alpacar) getApplication()).setFahrerId(Integer.parseInt(ans));
+                ((Alpacar) getApplication()).setName(vname);
                 Toast.makeText(getBaseContext(), "Registration successful", Toast.LENGTH_LONG).show();
                 finish();
                 startActivity(intent);
@@ -159,6 +161,8 @@ public class LoginActivity extends AppCompatActivity {
                     urlConnection.connect();
                     if (urlConnection.getResponseCode() == 200) {
                         inputStream = urlConnection.getInputStream();
+                        UnicodeBOMInputStream bomInputStream = new UnicodeBOMInputStream(inputStream);
+                        bomInputStream.skipBOM();
                         ans = readFromStream(inputStream);
                         Log.d("test", ans);
                     } else {
@@ -190,7 +194,7 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(this, "Please enter username and password", Toast.LENGTH_SHORT).show();
             return;
         }
-        String username = user.getText().toString();
+        final String username = user.getText().toString();
         String password = pass.getText().toString();
         Uri.Builder builder = new Uri.Builder();
         builder.scheme("https")
@@ -226,9 +230,11 @@ public class LoginActivity extends AppCompatActivity {
                     editor.putBoolean("login", true);
                     int fahrer = Integer.valueOf(ans.toString());
                     editor.putInt("fahrerId", fahrer);
+                    editor.putString("name", username);
                     editor.clear().apply();
                     ((Alpacar) getApplication()).setLoginState(true);
                     ((Alpacar) getApplication()).setFahrerId(fahrer);
+                    ((Alpacar) getApplication()).setName(username);
                     Toast.makeText(getBaseContext(), "Login successful", Toast.LENGTH_LONG).show();
                     finish();
                     startActivity(intent);

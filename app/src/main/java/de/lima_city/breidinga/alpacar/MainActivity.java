@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -46,10 +48,12 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
+import java.net.URI;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import de.lima_city.breidinga.alpacar.data.FahrtContract;
 import okhttp3.OkHttpClient;
@@ -79,6 +83,8 @@ public class MainActivity extends AppCompatActivity
     double lonAb;
     double lonAn;
     int plaetze;
+    boolean upab;
+    boolean upan;
 
    ////// EditText sitze = (EditText) findViewById(R.id.sitze);
    // String abfahrt;
@@ -93,6 +99,7 @@ public class MainActivity extends AppCompatActivity
         editor.clear();
         editor.putBoolean("login", ((Alpacar) getApplication()).getLoginState());
         editor.putInt("fahrerId", ((Alpacar) getApplication()).getFahrerId());
+        editor.putString("name", ((Alpacar)getApplication()).getName());
         editor.clear().apply();
     }
 
@@ -104,7 +111,14 @@ public class MainActivity extends AppCompatActivity
         login = preferences.getBoolean("login", false);
         ((Alpacar) getApplication()).setLoginState(preferences.getBoolean("login", false));
         ((Alpacar) getApplication()).setFahrerId(preferences.getInt("fahrerId", -1));
-        try{
+        ((Alpacar) getApplication()).setName(preferences.getString("name", "Nutzer"));
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            Toast.makeText(this, "No Internet Connection", Toast.LENGTH_LONG).show();
+        }
+            try{
             login = ((Alpacar) getApplication()).getLoginState();
         }catch (NullPointerException e){
             e.printStackTrace();
@@ -118,10 +132,6 @@ public class MainActivity extends AppCompatActivity
         final FrameLayout radioFahrer = (FrameLayout) findViewById(R.id.frame_fahrer);
         FrameLayout radioMitfahrer = (FrameLayout) findViewById(R.id.frame_mitfahrer);
         FrameLayout hinfahrt = (FrameLayout) findViewById(R.id.frame_datum_hinfahrt);
-        NumberPicker picker = (NumberPicker) findViewById(R.id.np);
-        picker.setMinValue(1);
-        picker.setMaxValue(9);
-
 
         // Defining Floating Action Button
 
@@ -157,12 +167,15 @@ public class MainActivity extends AppCompatActivity
         places.setHint(getResources().getString(R.string.abfahrt_ort_hint));
         places2.setHint(getResources().getString(R.string.ziel_ort_hint));
         if (getIntent().hasExtra("id")){
+            upab = false;
+            upan = false;
             update = true;
             fahrt = new Fahrt(getIntent().getIntExtra("id", -1), Date.valueOf(getIntent().getStringExtra("Datum")), getIntent().getStringExtra("Abfahrt"), getIntent().getStringExtra("Ankunft"), getIntent().getIntExtra("Plaetze", -1), getIntent().getIntExtra("FahrerId", -1));
-            ((NumberPicker) findViewById(R.id.np)).setValue(fahrt.getPlaetze());
+            ((EditText) findViewById(R.id.number)).setText(String.valueOf(fahrt.getPlaetze()));
             ((TextView) findViewById(R.id.frame_datum_hinfahrt_text)).setText(formatDate(fahrt.getDate().toString()));
             places.setText(fahrt.getAbfahrtsOrt());
             places2.setText(fahrt.getAnkunftsOrt());
+            //Log.d("Main", places.getText().toString());
             Toast.makeText(this,"Bitte bestätigen Sie die beiden Orte", Toast.LENGTH_LONG);
             TextView button = (TextView) findViewById(R.id.frame_datum_hinfahrt_text);
             button.setTextColor(getResources().getColor(R.color.colorTwoEingeloggt));
@@ -172,6 +185,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onPlaceSelected(Place place) {
                 abfahrtsOrt = place.getAddress().toString();
+                upab = true;
                 latAb = place.getLatLng().latitude;
                 lonAb =  place.getLatLng().longitude;
             }
@@ -185,6 +199,8 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onPlaceSelected(Place place) {
                 ankunftsOrt = place.getAddress().toString();
+                ankunftsOrt = ankunftsOrt.replace(" ", "+");
+                upan = true;
                 latAn = place.getLatLng().latitude;
                 lonAn =  place.getLatLng().longitude;
             }
@@ -200,13 +216,16 @@ public class MainActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
-
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        View header = navigationView.getHeaderView(0);
+        String gruss = "Hallo " + ((Alpacar)getApplication()).getName();
+        ((TextView) header.findViewById(R.id.welcome)).setText(gruss);
         Log.d("FahrerId", String.valueOf(fahrerId));
     }
     //Vollständigkeit der Daten überprüfen
     private void validateData(){
+        if (!update){
         try {
         if ((!formatDate().isEmpty() || formatDate() != null) && (!abfahrtsOrt.isEmpty() || abfahrtsOrt != null) && (!ankunftsOrt.isEmpty() || ankunftsOrt != null)){
                 Uri.Builder builder = new Uri.Builder();
@@ -228,18 +247,56 @@ public class MainActivity extends AppCompatActivity
                 uriBuilder.appendQueryParameter("AnkunftOrt", ankunftsOrt);
                 uriBuilder.appendQueryParameter("latAn", String.valueOf(latAn));
                 uriBuilder.appendQueryParameter("lonAn", String.valueOf(lonAn));
-                plaetze = ((NumberPicker) findViewById(R.id.np)).getValue();
+                plaetze = Integer.parseInt(((EditText) findViewById(R.id.number)).getText().toString());
                 uriBuilder.appendQueryParameter("Plaetze", String.valueOf(plaetze));
                 uriBuilder.appendQueryParameter("Fahrer", String.valueOf(((Alpacar) getApplication()).getFahrerId()));
                 Uri uri = uriBuilder.build();
+                String uristring = uri.toString();
+                uristring = uristring.replace("%2B", "+");
+                URL url;
+                try{
+                url = new URL(uristring);}
+                catch (MalformedURLException u){
+                    u.printStackTrace();
+                    url = null;
+                }
                 Log.d("uri", uri.toString());
-                asyncTaskInsert(uri);
+                asyncTaskInsert(url);
         }}catch (NullPointerException e){
             Toast.makeText(getBaseContext(), "Bitte füllen Sie alles aus", Toast.LENGTH_LONG).show();
+        }}else{
+            Uri.Builder builder = new Uri.Builder();
+            builder.scheme("https")
+                    .authority("breidinga.lima-city.de")
+                    .appendPath("Datenbank");
+            builder.appendPath("fahrten.php");
+            Uri baseUri = builder.build();
+            Uri.Builder uriBuilder = baseUri.buildUpon();
+            uriBuilder.appendQueryParameter("mode", "updatef");
+            update = false;
+            uriBuilder.appendQueryParameter("Datum", formatDate());
+            uriBuilder.appendQueryParameter("_id", String.valueOf(getIntent().getIntExtra("id", -1)));
+            if(upab){
+                uriBuilder.appendQueryParameter("AbfahrtOrt", abfahrtsOrt);
+                uriBuilder.appendQueryParameter("latAb", String.valueOf(latAb));
+                uriBuilder.appendQueryParameter("lonAb", String.valueOf(lonAb));}
+            if(upan){
+                uriBuilder.appendQueryParameter("AnkunftOrt", ankunftsOrt);
+                uriBuilder.appendQueryParameter("latAn", String.valueOf(latAn));
+                uriBuilder.appendQueryParameter("lonAn", String.valueOf(lonAn));}
+            plaetze = Integer.parseInt(((EditText) findViewById(R.id.number)).getText().toString());
+            uriBuilder.appendQueryParameter("Plaetze", String.valueOf(plaetze));
+            Uri uri = uriBuilder.build();
+            Log.d("uri", uri.toString());
+            try{
+            asyncTaskInsert(new URL(uri.toString()));}
+            catch (MalformedURLException u){
+                u.printStackTrace();
+            }
         }
     }
-    private void asyncTaskInsert(final Uri uri){
-        AsyncTask<Uri, Void,Void> asyncTask = new AsyncTask<Uri, Void, Void>() {
+    private void asyncTaskInsert(final URL url){
+        AsyncTask<URL, Void,Void> asyncTask = new AsyncTask<URL, Void, Void>() {
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
@@ -253,14 +310,7 @@ public class MainActivity extends AppCompatActivity
             }
 
             @Override
-            protected Void doInBackground(Uri... uris) {
-                URL url;
-                url = null;
-                try{
-                url = new URL(uri.toString());}
-                catch (MalformedURLException e){
-                    e.printStackTrace();
-                }
+            protected Void doInBackground(URL... uris) {
                 if(url == null){
                     Log.e("MainActivity.java", "Error creating URL");
                     return null;
@@ -294,12 +344,13 @@ public class MainActivity extends AppCompatActivity
                 return null;
             }
         };
-        asyncTask.execute(uri);
+        asyncTask.execute(url);
     }
 
     private String formatDate() {
         TextView DatumHinfahrtText = (TextView) findViewById(R.id.frame_datum_hinfahrt_text);
         String datumHinfahrt = DatumHinfahrtText.getText().toString();
+        Log.d("Datum", datumHinfahrt);
         String oldFormat;
         String newFormat;
         if(!update){
@@ -309,7 +360,7 @@ public class MainActivity extends AppCompatActivity
             newFormat = "dd/MM/yyyy";
             oldFormat = "yyyy-MM-dd";
         }
-        String formattedDate = "";
+        String formattedDate;
         SimpleDateFormat dateFormat = new SimpleDateFormat(oldFormat);
         java.util.Date myDate = null;
         try {
@@ -389,7 +440,11 @@ public class MainActivity extends AppCompatActivity
             uriBuilder.appendQueryParameter("AbfahrtOrt", abfahrtsOrt);
             Uri uri = uriBuilder.build();
             Log.d("uri", uri.toString());
-            asyncTaskInsert(uri);
+            try{
+            asyncTaskInsert(new URL(uri.toString()));}
+            catch(MalformedURLException u){
+                u.printStackTrace();
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -426,12 +481,15 @@ public class MainActivity extends AppCompatActivity
             finish();
             startActivity(intent);
         } else if (id == R.id.nav_manage) {
+            Intent intent = new Intent(MainActivity.this, Impressum.class);
+            finish();
+            startActivity(intent);
+        }// else if (id == R.id.nav_share) {
 
-        } else if (id == R.id.nav_share) {
+        //} else if (id == R.id.nav_send) {
 
-        } else if (id == R.id.nav_send) {
-
-        } else if (id == R.id.logout){
+        //}
+        else if (id == R.id.logout){
             ((Alpacar) getApplication()).setFahrerId(-1);
             ((Alpacar) getApplication()).setLoginState(false);
             SharedPreferences.Editor editor = preferences.edit();

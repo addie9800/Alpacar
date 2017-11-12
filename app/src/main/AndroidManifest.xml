@@ -33,6 +33,8 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".CreditsActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".Impressum"
+            android:theme="@style/AppTheme.NoActionBar"/>
 
         <activity
             android:name=".Content"

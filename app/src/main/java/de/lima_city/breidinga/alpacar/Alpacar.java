@@ -21,4 +21,11 @@ public class Alpacar extends Application {
     public void setLoginState (boolean state){
         login = state;
     }
+    private String Name;
+    public String getName(){
+        return Name;
+    }
+    public void setName(String name){
+        Name = name;
+    }
 }

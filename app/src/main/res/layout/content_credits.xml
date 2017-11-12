@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -51,7 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:gravity="center"
-            android:text="Zum Team gehören:\n\n Adrian Breiding (Executive Chief of Programming) \n Lasse Lemke (Head of Organization and Timemanagement \n Linus Trauberg (Head of Creativity Department) \n Jonas Woltmann (Chief of legal Transactions) \n Tim Wanagat (Head Facility Manager) \n Jonas Bastian (Decoration)"
+            android:text="Zum Team gehören:\n\n Adrian Breiding (Executive Chief of Programming) \n Lasse Lemke (Head of Organization and Timemanagement) \n Linus Trauberg (Head of Creativity Department) \n Jonas Woltmann (Chief of legal Transactions) \n Tim Wanagat (Head Facility Manager) \n Jonas Bastian (Decoration)"
             android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"/>
 

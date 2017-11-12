@@ -11,23 +11,27 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
 /**
- * Created by Addie on 03.11.2017.
+ * Created by Addie on 12.11.2017.
  */
 
-public class CreditsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-
+public class Impressum extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     SharedPreferences preferences;
-
+    @Override
+    protected void onStop() {
+        super.onStop();
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.clear();
+        editor.clear().apply();
+    }
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        setContentView(R.layout.activity_credits);
+        setContentView(R.layout.activity_impressum);
         super.onCreate(savedInstanceState);
         preferences = this.getSharedPreferences("USER_DATA", Context.MODE_PRIVATE);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -72,19 +76,20 @@ public class CreditsActivity extends AppCompatActivity implements NavigationView
         int id = item.getItemId();
 
         if (id == R.id.nav_new_fahrt) {
-            Intent intent = new Intent(CreditsActivity.this, MainActivity.class);
+            Intent intent = new Intent(Impressum.this, MainActivity.class);
             finish();
             startActivity(intent);
         } else if (id == R.id.nav_meine_fahrten) {
-            Intent intent = new Intent(CreditsActivity.this, FahrtenActivity.class);
+            Intent intent = new Intent(Impressum.this, FahrtenActivity.class);
             finish();
             startActivity(intent);
         } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-            Intent intent = new Intent(CreditsActivity.this, Impressum.class);
+            Intent intent = new Intent(Impressum.this, CreditsActivity.class);
             finish();
             startActivity(intent);
+
+        } else if (id == R.id.nav_manage) {
+
         } //else if (id == R.id.nav_share) {
 
         //} else if (id == R.id.nav_send) {
@@ -99,7 +104,7 @@ public class CreditsActivity extends AppCompatActivity implements NavigationView
             editor.putBoolean("login", false);
             editor.putInt("fahrerId", -1);
             editor.clear().apply();
-            Intent intent = new Intent(CreditsActivity.this, LoginActivity.class);
+            Intent intent = new Intent(Impressum.this, LoginActivity.class);
             finish();
             startActivity(intent);
         }

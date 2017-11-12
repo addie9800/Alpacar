@@ -50,6 +50,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.lima_city.breidinga.alpacar.data.FahrtenAdapter;
+import de.lima_city.breidinga.alpacar.data.UnicodeBOMInputStream;
 
 
 /**
@@ -59,6 +60,7 @@ import de.lima_city.breidinga.alpacar.data.FahrtenAdapter;
 public class FahrtenActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SwipeRefreshLayout.OnRefreshListener {
     String ans;
     boolean fahrer;
+    SharedPreferences preferences;
 
 
 
@@ -66,6 +68,7 @@ public class FahrtenActivity extends AppCompatActivity implements NavigationView
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fahrten);
+        preferences = this.getSharedPreferences("USER_DATA", Context.MODE_PRIVATE);
         ConnectivityManager connMgr = (ConnectivityManager)
                 getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -78,6 +81,9 @@ public class FahrtenActivity extends AppCompatActivity implements NavigationView
         toggle.syncState();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        View header = navigationView.getHeaderView(0);
+        String gruss = "Hallo " + ((Alpacar)getApplication()).getName();
+        ((TextView) header.findViewById(R.id.welcome)).setText(gruss);
         findViewById(R.id.empty_linear).setVisibility(View.GONE);
         SwipeRefreshLayout layout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
         layout.setOnRefreshListener(this);
@@ -90,11 +96,12 @@ public class FahrtenActivity extends AppCompatActivity implements NavigationView
         else{
             fahrer = true;
             if (networkInfo != null && networkInfo.isConnected()) {
+                ProgressBar bar = (ProgressBar) findViewById(R.id.progress);
+                bar.setVisibility(View.VISIBLE);
                 getData();
                 ListView fahrtListView = (ListView) findViewById(R.id.list);
                 fahrtListView.setEmptyView(findViewById(R.id.empty));
-                ProgressBar bar = (ProgressBar) findViewById(R.id.progress);
-                bar.setVisibility(View.VISIBLE);
+
             } else {
                 ProgressBar bar = (ProgressBar) findViewById(R.id.progress);
                 bar.setVisibility(View.GONE);
@@ -239,12 +246,15 @@ public class FahrtenActivity extends AppCompatActivity implements NavigationView
             finish();
             startActivity(intent);
         } else if (id == R.id.nav_manage) {
+            Intent intent = new Intent(FahrtenActivity.this, Impressum.class);
+            finish();
+            startActivity(intent);
+        } //else if (id == R.id.nav_share) {
 
-        } else if (id == R.id.nav_share) {
+        //} else if (id == R.id.nav_send) {
 
-        } else if (id == R.id.nav_send) {
-
-        } else if (id == R.id.logout){
+        //}
+         else if (id == R.id.logout){
             ((Alpacar) getApplication()).setFahrerId(-1);
             ((Alpacar) getApplication()).setLoginState(false);
             SharedPreferences preferences = this.getSharedPreferences("USER_DATA", Context.MODE_PRIVATE);
