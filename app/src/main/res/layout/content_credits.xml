@@ -45,7 +45,7 @@
             android:layout_marginTop="20dp"
             android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"
-            android:text="Image Credits: \n \n'Sign Contractor' made by https://www.flaticon.com/authors/freepik from www.flaticon.com \n 'Menu' made by https://www.flaticon.com/authors/those-icons from www.flaticon.com \n 'Logout' made by https://www.flaticon.com/authors/gregor-cresnar from www.flaticon.com \n 'Jeep' made by https://www.flaticon.com/authors/freepik from www.flaticon.com \n 'Listing Option' made by https://www.flaticon.com/authors/dave-gandy from www.flaticon.com \n 'Paragraph Symbol' made by https://www.flaticon.com/authors/picol from www.flaticon.com"
+            android:text="Image Credits: \n \n'Sign Contractor' made by https://www.flaticon.com/authors/freepik from www.flaticon.com \n 'Menu' made by https://www.flaticon.com/authors/those-icons from www.flaticon.com \n 'Car breakdown' made by https://www.flaticon.com/authors/Freepik from www.flaticon.com \n 'Logout' made by https://www.flaticon.com/authors/gregor-cresnar from www.flaticon.com \n 'Jeep' made by https://www.flaticon.com/authors/freepik from www.flaticon.com \n 'Listing Option' made by https://www.flaticon.com/authors/dave-gandy from www.flaticon.com \n 'Paragraph Symbol' made by https://www.flaticon.com/authors/picol from www.flaticon.com"
             android:gravity="start"
             />
         <TextView
