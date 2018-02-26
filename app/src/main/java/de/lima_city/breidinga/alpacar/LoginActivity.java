@@ -12,6 +12,7 @@ import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -68,7 +69,19 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void register(View view) {
-        if (user.getText().toString().isEmpty() || pass.getText().toString().isEmpty()) {
+        boolean error = false;
+        if (user.getText().toString().isEmpty()) {
+            user.setError("Bitte geben Sie einen Benutzernamen ein");
+            error = true;
+        }else if (verifyUser(user.getText().toString())){
+            user.setError("Der Benutzername wird bereits verwendet");
+            error = true;
+        }
+        if (pass.getText().toString().isEmpty()) {
+            pass.setError("Bitte geben Sie ein Passwort ein");
+            error = true;
+        }
+        if (error){
             return;
         }
         username = user.getText().toString();
@@ -81,17 +94,36 @@ public class LoginActivity extends AppCompatActivity {
         mail.setVisibility(View.VISIBLE);
         bar.setVisibility(View.GONE);
         loginButton.setVisibility(View.VISIBLE);
+        findViewById(R.id.agb).setVisibility(View.VISIBLE);
     }
-    //TODO: Check if username is already taken
-
+    private boolean verifyUser (String name){
+        //TODO: Check if username is already taken
+        return false;
+    }
     public void sendDataButton(View view) {
-        if (vorname.getText().toString().isEmpty() || nachname.getText().toString().isEmpty() || mail.getText().toString().isEmpty()) {
-            Toast.makeText(this, "Ein oder mehrere Feld(er) nicht ausgefüllt", Toast.LENGTH_LONG).show();
-            return;
+        boolean error = false;
+        if (vorname.getText().toString().isEmpty()) {
+            vorname.setError("Bitte geben Sie Ihren Vornamen ein");
+            error = true;
+        }
+        if (nachname.getText().toString().isEmpty()) {
+            nachname.setError("Bitte geben Sie Ihren Nachnamen ein");
+            error = true;
+        }
+        if (mail.getText().toString().isEmpty()) {
+            mail.setError("Bitte geben Sie Ihren Nachnamen ein");
+            error = true;
+        }
+        if (!(((CheckBox) findViewById(R.id.agb)).isChecked())){
+            ((CheckBox) findViewById(R.id.agb)).setError("Bitte bestätigen Sie die AGB");
+            error = true;
         }
         CharSequence mailtext = mail.getText();
         if (!Patterns.EMAIL_ADDRESS.matcher(mailtext).matches()) {
-            Toast.makeText(this, "Bitte eine gültige E-mail Adresse angeben", Toast.LENGTH_LONG).show();
+            mail.setError("Bitte geben Sie eine gültige E-Mail Adresse ein");
+            error = true;
+        }
+        if (error){
             return;
         }
 
@@ -190,8 +222,16 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void login(View view) {
-        if (user.getText().toString().isEmpty() || pass.getText().toString().isEmpty()) {
-            Toast.makeText(this, "Please enter username and password", Toast.LENGTH_SHORT).show();
+        boolean error = false;
+        if (user.getText().toString().isEmpty()) {
+            user.setError("Bitte geben Sie einen Benutzernamen ein");
+            error = true;
+        }
+        if (pass.getText().toString().isEmpty()) {
+            pass.setError("Bitte geben Sie ein Passwort ein");
+            error = true;
+        }
+        if (error){
             return;
         }
         final String username = user.getText().toString();
